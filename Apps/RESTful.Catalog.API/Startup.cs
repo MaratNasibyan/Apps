@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+﻿using AutoMapper;
+using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using AutoMapper;
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
@@ -40,8 +42,10 @@ namespace RESTful.Catalog.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddNLog();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

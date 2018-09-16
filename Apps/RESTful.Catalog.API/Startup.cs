@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure;
-using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Models;
+using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
 
 
@@ -36,7 +37,9 @@ namespace RESTful.Catalog.API
                 cfg.CreateMap<CatalogType, CatalogTypeDto>();
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc()
+                .AddMvcOptions(options => options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
         }

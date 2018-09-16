@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
-using RESTful.Catalog.API.Infrastructure.Abstraction;
+﻿using AutoMapper;                          
+using System;
+using System.Threading.Tasks;              
+using System.Collections.Generic;          
+using Microsoft.AspNetCore.Mvc;            
+using Microsoft.Extensions.Logging;        
 using RESTful.Catalog.API.Infrastructure.Models;
-using Microsoft.Extensions.Logging;
+using RESTful.Catalog.API.Infrastructure.Abstraction;
+
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -54,3 +55,15 @@ namespace RESTful.Catalog.API.Controllers
         }
     }
 }
+
+
+
+
+                                       /* Statuc codes */
+
+  /* Level 200 Success*/       /* Level 400 Client Error*/      /* Level 500 Server Error*/
+ /* 200 - Success */            /* 400 - Bad Request */       /* 500 - Internal Server Error*/
+ /* 201 - Created */            /* 401 - Unauthorized */
+ /* 204 - No Content */         /* 403 - Forbidden */              
+                                /* 404 - Not Found */  
+                                /* 409 - Conflict */

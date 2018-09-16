@@ -4,9 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
+using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
+using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Repositories;
+
 
 namespace RESTful.Catalog.API
 {
@@ -23,7 +27,12 @@ namespace RESTful.Catalog.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CatalogContext>(options =>
-                         options.UseSqlServer(Configuration["ConnectionString"]));           
+                         options.UseSqlServer(Configuration["ConnectionString"]));
+
+            Mapper.Initialize(cfg =>
+            {
+                cfg.CreateMap<CatalogType, CatalogTypeDto>();
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 

@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using RESTful.Catalog.API.Infra.Models;
+using AutoMapper;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
+using RESTful.Catalog.API.Infrastructure.Models;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -35,23 +36,13 @@ namespace RESTful.Catalog.API.Controllers
                     return NotFound();
                 }
 
-                ICollection<CatalogTypeDto> result = new List<CatalogTypeDto>();
-
-                foreach (var item in data)
-                {
-                    result.Add(new CatalogTypeDto
-                    {
-                        Id = item.Id,
-                        Type = item.Type,
-                        CatalogItems = item.CatalogItems                       
-                    });
-                }
+                var result = Mapper.Map<IEnumerable<CatalogType>>(data);            
 
                 return Ok(result);
             }
             catch (Exception)
             {
-                return StatusCode(500, "A pronlem happened while handeling your request");
+                return StatusCode(500, "A problem happened while handeling your request");
             }
         }
     }

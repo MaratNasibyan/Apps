@@ -13,7 +13,7 @@ using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
-
+using Microsoft.AspNetCore.Http;
 
 namespace RESTful.Catalog.API
 {
@@ -37,9 +37,14 @@ namespace RESTful.Catalog.API
                 cfg.CreateMap<CatalogType, CatalogTypeDto>();
             });
 
-            services.AddMvc()
-                .AddMvcOptions(options => options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(setupAction =>
+            {
+                setupAction.ReturnHttpNotAcceptable = true;
+                setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+              //  setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //.AddMvcOptions(options => options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
         }
@@ -55,6 +60,14 @@ namespace RESTful.Catalog.API
             }
             else
             {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("A problem happened while handeling your request");
+                    });
+                });
                 app.UseHsts();
             }
 

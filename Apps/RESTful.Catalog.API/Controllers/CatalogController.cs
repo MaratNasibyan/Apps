@@ -10,7 +10,7 @@ using RESTful.Catalog.API.Infrastructure.Abstraction;
 
 namespace RESTful.Catalog.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/catalogs")]
     public class CatalogController : Controller
     {
         private readonly ICatalogRepository _catalogDataRepository;
@@ -27,12 +27,11 @@ namespace RESTful.Catalog.API.Controllers
             return View();
         }
 
-        [HttpGet]
-        [Route("[action]")]
+        [HttpGet()]   
         public async Task<IActionResult> GetCatalogTypes()
         {
             try
-            {             
+            {
                 var data = await _catalogDataRepository.GetCatalogTypesAsync();
 
                 if (data is null)
@@ -43,10 +42,36 @@ namespace RESTful.Catalog.API.Controllers
                 }
 
                 var result = Mapper.Map<IEnumerable<CatalogType>>(data);
-               
+                
                 return Ok(result);
             }
             catch (Exception ex)
+            {
+                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
+
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCatalogTypeByIdAsync(int id)
+        {
+            try
+            {               
+                var data = await _catalogDataRepository.GetCatalogTypeByIdAsync(id);
+
+                if (data is null)
+                {
+                    _logger.LogInformation("Data wasn't found in Db");
+
+                    return NotFound();
+                }
+
+                var result = Mapper.Map<CatalogType>(data);
+
+                return Ok(result);
+            }
+            catch(Exception ex)
             {
                 _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
 

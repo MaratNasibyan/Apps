@@ -6,12 +6,7 @@ namespace RESTful.Catalog.API.Infrastructure.Models
     {
         public int Id { get; set; }
         public string Type { get; set; }
-
-        public List<CatalogItem> CatalogItems { get; set; }
-
-        public CatalogType()
-        {
-            CatalogItems = new List<CatalogItem>();
-        }
+        public ICollection<CatalogItem> CatalogItems { get; set; } = new List<CatalogItem>();
+       
     }
 }

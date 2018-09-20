@@ -7,5 +7,6 @@ namespace RESTful.Catalog.API.Infrastructure.Abstraction
     public interface ICatalogRepository
     {
         Task<IEnumerable<CatalogType>> GetCatalogTypesAsync();
+        Task<CatalogType> GetCatalogTypeByIdAsync(int id);
     }
 }

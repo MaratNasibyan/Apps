@@ -26,10 +26,10 @@ namespace RESTful.Catalog.API.Infrastructure.EntityConfigurations
             builder.Property(ci => ci.PictureFileName)
                 .IsRequired(false);
 
-            builder.Ignore(ci => ci.PictureUri);          
+            builder.Ignore(ci => ci.PictureUri);
 
             builder.HasOne(ci => ci.CatalogType)
-                .WithMany()
+                .WithMany(ci => ci.CatalogItems)
                 .HasForeignKey(ci => ci.CatalogTypeId);
         }
     }

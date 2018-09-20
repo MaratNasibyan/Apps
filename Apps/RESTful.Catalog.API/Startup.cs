@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -13,7 +14,7 @@ using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Http;
+
 
 namespace RESTful.Catalog.API
 {
@@ -41,7 +42,7 @@ namespace RESTful.Catalog.API
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-              //  setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
+                setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //.AddMvcOptions(options => options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))

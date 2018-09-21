@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -44,8 +44,9 @@ namespace RESTful.Catalog.API
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            //.AddMvcOptions(options => options.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter()))
+            .AddJsonOptions(options => 
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);         
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
         }
@@ -61,14 +62,14 @@ namespace RESTful.Catalog.API
             }
             else
             {
-                app.UseExceptionHandler(appBuilder =>
-                {
-                    appBuilder.Run(async context =>
-                    {
-                        context.Response.StatusCode = 500;
-                        await context.Response.WriteAsync("A problem happened while handeling your request");
-                    });
-                });
+                //app.UseExceptionHandler(appBuilder =>
+                //{
+                //    appBuilder.Run(async context =>
+                //    {
+                //        context.Response.StatusCode = 500;
+                //        await context.Response.WriteAsync("A problem happened while handeling your request");
+                //    });
+                //});
                 app.UseHsts();
             }
 

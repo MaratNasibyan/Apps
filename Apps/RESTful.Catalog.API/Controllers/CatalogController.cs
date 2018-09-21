@@ -27,7 +27,7 @@ namespace RESTful.Catalog.API.Controllers
             return View();
         }
 
-        [HttpGet()]   
+        [HttpGet()]
         public async Task<IActionResult> GetCatalogTypes()
         {
             try
@@ -42,7 +42,7 @@ namespace RESTful.Catalog.API.Controllers
                 }
 
                 var result = Mapper.Map<IEnumerable<CatalogType>>(data);
-                
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace RESTful.Catalog.API.Controllers
 
                 if (data is null)
                 {
-                    _logger.LogInformation("Data wasn't found in Db");
+                    _logger.LogInformation($"With id {id} data wasn't found in Db");
 
                     return NotFound();
                 }

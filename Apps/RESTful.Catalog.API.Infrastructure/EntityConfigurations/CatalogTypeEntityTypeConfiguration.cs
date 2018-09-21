@@ -19,9 +19,7 @@ namespace RESTful.Catalog.API.Infrastructure.EntityConfigurations
             builder.Property(cb => cb.Type)
                 .IsRequired()
                 .HasMaxLength(100);
-
-            builder.HasMany(cb => cb.CatalogItems)
-                .WithOne(c => c.CatalogType);
+                      
              
         }
     }

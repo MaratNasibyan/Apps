@@ -43,7 +43,7 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
 
                     b.HasIndex("CatalogTypeId");
 
-                    b.ToTable("Catalog");
+                    b.ToTable("CatalogItem");
 
                     b.HasData(
                         new { Id = 1, CatalogTypeId = 2, Description = ".NET Bot Black Hoodie", Name = ".NET Bot Black Hoodie", PictureFileName = "1.png", Price = 19.5m },

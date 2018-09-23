@@ -9,7 +9,7 @@ using RESTful.Catalog.API.Infrastructure;
 namespace RESTful.Catalog.API.Infrastructure.Migrations
 {
     [DbContext(typeof(CatalogContext))]
-    [Migration("20180921062830_Init")]
+    [Migration("20180922193205_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,7 +45,7 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
 
                     b.HasIndex("CatalogTypeId");
 
-                    b.ToTable("Catalog");
+                    b.ToTable("CatalogItem");
 
                     b.HasData(
                         new { Id = 1, CatalogTypeId = 2, Description = ".NET Bot Black Hoodie", Name = ".NET Bot Black Hoodie", PictureFileName = "1.png", Price = 19.5m },

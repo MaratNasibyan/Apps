@@ -27,7 +27,7 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Catalog",
+                name: "CatalogItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false),
@@ -39,9 +39,9 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Catalog", x => x.Id);
+                    table.PrimaryKey("PK_CatalogItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Catalog_CatalogType_CatalogTypeId",
+                        name: "FK_CatalogItem_CatalogType_CatalogTypeId",
                         column: x => x.CatalogTypeId,
                         principalTable: "CatalogType",
                         principalColumn: "Id",
@@ -60,7 +60,7 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Catalog",
+                table: "CatalogItem",
                 columns: new[] { "Id", "CatalogTypeId", "Description", "Name", "PictureFileName", "Price" },
                 values: new object[,]
                 {
@@ -79,15 +79,15 @@ namespace RESTful.Catalog.API.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Catalog_CatalogTypeId",
-                table: "Catalog",
+                name: "IX_CatalogItem_CatalogTypeId",
+                table: "CatalogItem",
                 column: "CatalogTypeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Catalog");
+                name: "CatalogItem");
 
             migrationBuilder.DropTable(
                 name: "CatalogType");

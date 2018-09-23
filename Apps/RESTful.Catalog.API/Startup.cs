@@ -36,6 +36,7 @@ namespace RESTful.Catalog.API
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<CatalogType, CatalogTypeDto>();
+                cfg.CreateMap<CatalogItem, CatalogItemDto>();
             });
 
             services.AddMvc(setupAction =>

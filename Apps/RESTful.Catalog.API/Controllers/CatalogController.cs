@@ -3,7 +3,8 @@ using System;
 using System.Threading.Tasks;              
 using System.Collections.Generic;          
 using Microsoft.AspNetCore.Mvc;            
-using Microsoft.Extensions.Logging;        
+using Microsoft.Extensions.Logging;
+using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 
@@ -22,6 +23,7 @@ namespace RESTful.Catalog.API.Controllers
             _logger = logger;
         }
 
+        #region GET
         public IActionResult Index()
         {
             return View();
@@ -53,7 +55,7 @@ namespace RESTful.Catalog.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCatalogTypeByIdAsync")]
         public async Task<IActionResult> GetCatalogTypeByIdAsync(int id)
         {
             try
@@ -77,7 +79,55 @@ namespace RESTful.Catalog.API.Controllers
 
                 return StatusCode(500, "A problem happened while handeling your request");
             }
+        }            
+
+        #endregion
+
+        #region POST
+
+        [HttpPost("{ctgTypeId}/ctgItem")]
+        public async Task<IActionResult> CreateCatalogItem(int ctgTypeId, [FromBody]CatalogItemDto ctgItem)
+        {
+            try
+            {
+                if (ctgItem is null)
+                {
+                    return BadRequest();
+                }
+
+                var data = await _catalogDataRepository.GetCatalogTypeByIdAsync(ctgTypeId);
+
+                if (data is null)
+                {
+                    _logger.LogInformation($"With id {ctgTypeId} data wasn't found in Db");
+
+                    return NotFound();
+                }
+
+                var result = Mapper.Map<CatalogItem>(ctgItem);
+
+                await _catalogDataRepository.CreateItemForCatalog(ctgTypeId, result);
+
+                if (!_catalogDataRepository.Save())
+                {
+                    return StatusCode(500, "A problem happened while handeling your request");
+                }
+
+                var resultDto = Mapper.Map<CatalogItemDto>(result);
+
+                return CreatedAtRoute(routeName: "GetCatalogTypeByIdAsync",
+                                       routeValues: new { id = resultDto.CatalogTypeId },
+                                       value: resultDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
+
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
         }
+
+        #endregion
     }
 }
 

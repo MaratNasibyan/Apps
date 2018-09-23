@@ -30,5 +30,17 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
                     .Where(x => x.Id == id)
                     .FirstOrDefaultAsync();
         }
+
+        public async Task CreateItemForCatalog(int ctgTypeId, CatalogItem ctgItem)
+        {
+            var ctgType = await GetCatalogTypeByIdAsync(ctgTypeId);
+
+            ctgType.CatalogItems.Add(ctgItem);
+        }
+
+        public bool Save()
+        {
+            return (_dbContext.SaveChanges() >= 0);
+        }
     }
 }

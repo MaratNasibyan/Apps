@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RESTful.Catalog.API.Infrastructure.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RESTful.Catalog.API.Infrastructure.EntityConfigurations
 {
@@ -8,11 +9,12 @@ namespace RESTful.Catalog.API.Infrastructure.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<CatalogItem> builder)
         {
-            builder.ToTable("Catalog");
+            builder.ToTable("CatalogItem");
 
-            builder.HasKey(ci => ci.Id);
-
+            builder.HasKey(ci => ci.Id);                 
+                
             builder.Property(ci => ci.Id)
+                .ValueGeneratedOnAdd()
                 .ForSqlServerUseSequenceHiLo("catalog_hilo")
                 .IsRequired();
 

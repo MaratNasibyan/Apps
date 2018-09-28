@@ -36,6 +36,29 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
             var ctgType = await GetCatalogTypeByIdAsync(ctgTypeId);
 
             ctgType.CatalogItems.Add(ctgItem);
+        }       
+
+        public async Task DeleteItemFromCatalogAsync(int ctgTypeId, int ctgItemId)
+        {
+            var deletedItem = await _dbContext.CatalogItems.Where(x => x.Id == ctgItemId && x.CatalogTypeId == ctgTypeId)
+                           .FirstOrDefaultAsync();
+
+            if (!(deletedItem is null))
+            {
+                _dbContext.CatalogItems.Remove(deletedItem);
+            }
+        }       
+
+        public async Task UpdateItemFromCatalogAsync(int ctgTypeId, int ctgItemId, CatalogItem ctgItem)
+        {
+            var updatedItem = await _dbContext.CatalogItems.Where(x => x.Id == ctgItemId && x.CatalogTypeId == ctgTypeId)
+                          .FirstOrDefaultAsync();
+
+            if (!(updatedItem is null))
+            {
+                updatedItem.Name = ctgItem.Name;
+                updatedItem.Description = ctgItem.Description;
+            }
         }
 
         public bool Save()

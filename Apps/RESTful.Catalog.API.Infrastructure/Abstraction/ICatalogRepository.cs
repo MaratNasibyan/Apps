@@ -9,6 +9,8 @@ namespace RESTful.Catalog.API.Infrastructure.Abstraction
         Task<IEnumerable<CatalogType>> GetCatalogTypesAsync();
         Task<CatalogType> GetCatalogTypeByIdAsync(int id);
         Task CreateItemForCatalog(int ctgTypeId, CatalogItem ctgItem);
+        Task DeleteItemFromCatalogAsync(int ctgTypeId, int ctgItemId);
+        Task UpdateItemFromCatalogAsync(int ctgTypeId, int ctgItemId, CatalogItem ctgItem);
         bool Save();
     }
 }

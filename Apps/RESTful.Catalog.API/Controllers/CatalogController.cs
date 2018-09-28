@@ -128,13 +128,48 @@ namespace RESTful.Catalog.API.Controllers
         }
 
         #endregion
+
+        #region DELETE
+        [HttpDelete("{ctgTypeId}/{ctgItemId}")]
+        public async Task<IActionResult> DeleteCatalogItem(int ctgTypeId, int ctgItemId)
+        {
+            await _catalogDataRepository.DeleteItemFromCatalogAsync(ctgTypeId, ctgItemId);
+
+            if (!_catalogDataRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
+
+            return NoContent();
+        }
+        #endregion
+
+        #region PUT
+        [HttpPut("{ctgTypeId}/{ctgItemId}/ctgItem")]
+        public async Task<IActionResult> UpdateCatalogItem(int ctgTypeId, int ctgItemId, [FromBody]CatalogItem ctgItem)
+        {
+            if (ctgItem is null)
+            {
+                return BadRequest();
+            }
+
+            await _catalogDataRepository.UpdateItemFromCatalogAsync(ctgTypeId, ctgItemId, ctgItem);
+
+            if (!_catalogDataRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handeling your request");
+            }
+
+            return NoContent();
+        }
+        #endregion
     }
 }
 
 
 
 
-                                       /* Statuc codes */
+                                       /* Status codes */
 
   /* Level 200 Success*/       /* Level 400 Client Error*/      /* Level 500 Server Error*/
  /* 200 - Success */            /* 400 - Bad Request */       /* 500 - Internal Server Error*/

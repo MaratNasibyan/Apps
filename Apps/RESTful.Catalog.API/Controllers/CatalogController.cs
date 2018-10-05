@@ -8,6 +8,7 @@ using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 
+using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -16,11 +17,13 @@ namespace RESTful.Catalog.API.Controllers
     {
         private readonly ICatalogRepository _catalogDataRepository;
         private readonly ILogger<CatalogController> _logger;
+        private readonly IUrlHelper _urlHelper;
 
-        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger)
+        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUrlHelper urlHelper)
         {
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
+            _urlHelper = urlHelper;
         }
 
         #region GET
@@ -30,11 +33,11 @@ namespace RESTful.Catalog.API.Controllers
         }
 
         [HttpGet()]
-        public async Task<IActionResult> GetCatalogTypes()
+        public async Task<IActionResult> GetCatalogTypes(CatalogResourceParameters ctgResourcePrms)
         {
             try
             {
-                var data = await _catalogDataRepository.GetCatalogTypesAsync();
+                var data = await _catalogDataRepository.GetCatalogTypesAsync(ctgResourcePrms);
 
                 if (data is null)
                 {

@@ -14,7 +14,8 @@ using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
-
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace RESTful.Catalog.API
 {
@@ -50,6 +51,16 @@ namespace RESTful.Catalog.API
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);         
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
+
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>
+                 {
+                     var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
+
+                     return new UrlHelper(actionContext);
+                 });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

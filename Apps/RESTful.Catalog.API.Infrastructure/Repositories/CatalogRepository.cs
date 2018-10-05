@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
+using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories
 {
@@ -16,11 +17,14 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync()
+        public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
         {
-                return await _dbContext.CatalogTypes
-                    .Include(x => x.CatalogItems)
-                    .ToListAsync();
+               var collection =_dbContext.CatalogTypes
+                        .Include(x => x.CatalogItems)                   
+                        .ToListAsync();
+
+            return await collection;
+                   
         }
 
         public async Task<CatalogType> GetCatalogTypeByIdAsync(int id)

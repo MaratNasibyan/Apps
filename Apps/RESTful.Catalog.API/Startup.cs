@@ -38,6 +38,8 @@ namespace RESTful.Catalog.API
             {
                 cfg.CreateMap<CatalogType, CatalogTypeDto>();
                 cfg.CreateMap<CatalogItem, CatalogItemDto>();
+                cfg.CreateMap<CatalogItem, CatalogItemForUpdateDto>();
+                cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
             });
 
             services.AddMvc(setupAction =>

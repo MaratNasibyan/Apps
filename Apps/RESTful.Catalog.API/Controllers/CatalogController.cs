@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
-
+using Microsoft.AspNetCore.JsonPatch;
 using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Controllers
@@ -19,6 +19,8 @@ namespace RESTful.Catalog.API.Controllers
         private readonly ILogger<CatalogController> _logger;
         private readonly IUrlHelper _urlHelper;
 
+  		#region ctor
+
         public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUrlHelper urlHelper)
         {
             _catalogDataRepository = catalogDataRepository;
@@ -26,7 +28,10 @@ namespace RESTful.Catalog.API.Controllers
             _urlHelper = urlHelper;
         }
 
+        #endregion
+
         #region GET
+
         public IActionResult Index()
         {
             return View();
@@ -58,12 +63,12 @@ namespace RESTful.Catalog.API.Controllers
             }
         }
 
-        [HttpGet("{id}", Name = "GetCatalogTypeByIdAsync")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogTypeByIdAsync(int id)
         {
             try
             {               
-                var data = await _catalogDataRepository.GetCatalogTypeByIdAsync(id);
+                var data = await _catalogDataRepository.GetCatalogItemByIdAsync(id);
 
                 if (data is null)
                 {
@@ -86,86 +91,7 @@ namespace RESTful.Catalog.API.Controllers
 
         #endregion
 
-        #region POST
-
-        [HttpPost("{ctgTypeId}/ctgItem")]
-        public async Task<IActionResult> CreateCatalogItem(int ctgTypeId, [FromBody]CatalogItemDto ctgItem)
-        {
-            try
-            {
-                if (ctgItem is null)
-                {
-                    return BadRequest();
-                }
-
-                var data = await _catalogDataRepository.GetCatalogTypeByIdAsync(ctgTypeId);
-
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {ctgTypeId} data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                var result = Mapper.Map<CatalogItem>(ctgItem);
-
-                await _catalogDataRepository.CreateItemForCatalog(ctgTypeId, result);
-
-                if (!_catalogDataRepository.Save())
-                {
-                    return StatusCode(500, "A problem happened while handeling your request");
-                }
-
-                var resultDto = Mapper.Map<CatalogItemDto>(result);
-
-                return CreatedAtRoute(routeName: "GetCatalogTypeByIdAsync",
-                                       routeValues: new { id = resultDto.CatalogTypeId },
-                                       value: resultDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
-
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
-        }
-
-        #endregion
-
-        #region DELETE
-        [HttpDelete("{ctgTypeId}/{ctgItemId}")]
-        public async Task<IActionResult> DeleteCatalogItem(int ctgTypeId, int ctgItemId)
-        {
-            await _catalogDataRepository.DeleteItemFromCatalogAsync(ctgTypeId, ctgItemId);
-
-            if (!_catalogDataRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
-
-            return NoContent();
-        }
-        #endregion
-
-        #region PUT
-        [HttpPut("{ctgTypeId}/{ctgItemId}/ctgItem")]
-        public async Task<IActionResult> UpdateCatalogItem(int ctgTypeId, int ctgItemId, [FromBody]CatalogItem ctgItem)
-        {
-            if (ctgItem is null)
-            {
-                return BadRequest();
-            }
-
-            await _catalogDataRepository.UpdateItemFromCatalogAsync(ctgTypeId, ctgItemId, ctgItem);
-
-            if (!_catalogDataRepository.Save())
-            {
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
-
-            return NoContent();
-        }
-        #endregion
+       
     }
 }
 

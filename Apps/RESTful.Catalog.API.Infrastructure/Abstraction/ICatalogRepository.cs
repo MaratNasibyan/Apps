@@ -8,10 +8,12 @@ namespace RESTful.Catalog.API.Infrastructure.Abstraction
     public interface ICatalogRepository
     {
         Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms);
-        Task<CatalogType> GetCatalogTypeByIdAsync(int id);
-        Task CreateItemForCatalog(int ctgTypeId, CatalogItem ctgItem);
-        Task DeleteItemFromCatalogAsync(int ctgTypeId, int ctgItemId);
-        Task UpdateItemFromCatalogAsync(int ctgTypeId, int ctgItemId, CatalogItem ctgItem);
+        Task<CatalogType> GetCatalogItemByIdAsync(int id);      
+        Task<IEnumerable<CatalogItem>> GetCatalogItemsByIdAsync(int id);
+        Task<CatalogItem> GetCatalogItem(int Id, int itemId);
+        Task CreateCatalogItem(int Id, CatalogItem ctgItem);
+        Task DeleteCatalogItem(int ctgTypeId, int ctgItemId);
+        Task UpdateCatalogItem(int ctgTypeId, int ctgItemId, CatalogItem ctgItem);     
         bool Save();
     }
 }

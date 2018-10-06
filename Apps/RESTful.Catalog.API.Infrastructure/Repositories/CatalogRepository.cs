@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.JsonPatch;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Helpers;
+
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories
 {
@@ -17,6 +19,8 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
+        #region CatalogController
+
         public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
         {
                var collection =_dbContext.CatalogTypes
@@ -27,7 +31,7 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
                    
         }
 
-        public async Task<CatalogType> GetCatalogTypeByIdAsync(int id)
+        public async Task<CatalogType> GetCatalogItemByIdAsync(int id)
         {
                 return await _dbContext.CatalogTypes
                     .Include(x => x.CatalogItems)
@@ -35,28 +39,46 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
                     .FirstOrDefaultAsync();
         }
 
-        public async Task CreateItemForCatalog(int ctgTypeId, CatalogItem ctgItem)
+        #endregion
+
+        #region CatalogItemController
+
+        public async Task<IEnumerable<CatalogItem>> GetCatalogItemsByIdAsync(int id)
         {
-            var ctgType = await GetCatalogTypeByIdAsync(ctgTypeId);
+            return await _dbContext.CatalogItems                  
+                    .Where(x => x.CatalogTypeId == id)
+                    .ToListAsync();
+        }
+
+        public async Task<CatalogItem> GetCatalogItem(int Id, int itemId)
+        {
+            return await _dbContext.CatalogItems
+                    .Where(x =>  x.CatalogTypeId == Id && x.Id == itemId)
+                    .FirstOrDefaultAsync();
+        }
+
+        public async Task CreateCatalogItem(int ctgTypeId, CatalogItem ctgItem)
+        {
+            var ctgType = await GetCatalogItemByIdAsync(ctgTypeId);
 
             ctgType.CatalogItems.Add(ctgItem);
-        }       
+        }
 
-        public async Task DeleteItemFromCatalogAsync(int ctgTypeId, int ctgItemId)
+        public async Task DeleteCatalogItem(int ctgTypeId, int ctgItemId)
         {
             var deletedItem = await _dbContext.CatalogItems.Where(x => x.Id == ctgItemId && x.CatalogTypeId == ctgTypeId)
-                           .FirstOrDefaultAsync();
+                         .FirstOrDefaultAsync();
 
             if (!(deletedItem is null))
             {
                 _dbContext.CatalogItems.Remove(deletedItem);
             }
-        }       
+        }
 
-        public async Task UpdateItemFromCatalogAsync(int ctgTypeId, int ctgItemId, CatalogItem ctgItem)
+        public async Task UpdateCatalogItem(int Id, int itemId, CatalogItem ctgItem)
         {
-            var updatedItem = await _dbContext.CatalogItems.Where(x => x.Id == ctgItemId && x.CatalogTypeId == ctgTypeId)
-                          .FirstOrDefaultAsync();
+            var updatedItem = await _dbContext.CatalogItems.Where(x => x.Id == itemId && x.CatalogTypeId == Id)
+                         .FirstOrDefaultAsync();
 
             if (!(updatedItem is null))
             {
@@ -64,6 +86,8 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
                 updatedItem.Description = ctgItem.Description;
             }
         }
+
+        #endregion
 
         public bool Save()
         {

@@ -2,11 +2,9 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.JsonPatch;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Helpers;
-
+using RESTful.Catalog.API.Infrastructure.Abstraction;
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories
 {
@@ -21,14 +19,12 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
 
         #region CatalogController
 
-        public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
+        public async Task<PagedList<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
         {
-               var collection =_dbContext.CatalogTypes
-                        .Include(x => x.CatalogItems)                   
-                        .ToListAsync();
-
-            return await collection;
-                   
+            var collection = await _dbContext.CatalogTypes
+                             .Include(x => x.CatalogItems).ToListAsync();                 
+                     
+            return  PagedList<CatalogType>.Create(collection, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);                   
         }
 
         public async Task<CatalogType> GetCatalogItemByIdAsync(int id)

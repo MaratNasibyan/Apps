@@ -1,13 +1,13 @@
 ﻿using AutoMapper;                          
 using System;
+using Newtonsoft.Json;
 using System.Threading.Tasks;              
 using System.Collections.Generic;          
 using Microsoft.AspNetCore.Mvc;            
 using Microsoft.Extensions.Logging;
-using RESTful.Catalog.API.Infra.Models;
+using RESTful.Catalog.API.Helpers;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
-using Microsoft.AspNetCore.JsonPatch;
 using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Controllers
@@ -37,7 +37,7 @@ namespace RESTful.Catalog.API.Controllers
             return View();
         }
 
-        [HttpGet()]
+        [HttpGet(Name = "GetCatalogs")]
         public async Task<IActionResult> GetCatalogTypes(CatalogResourceParameters ctgResourcePrms)
         {
             try
@@ -50,6 +50,21 @@ namespace RESTful.Catalog.API.Controllers
 
                     return NotFound();
                 }
+
+                var previousPageLink = data.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+                var nextPageLink = data.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
+
+                var paginationMetadata = new
+                {
+                    totalCount = data.TotalCount,
+                    pageSize = data.Pagesize,
+                    currentPage = data.CurrentPage,
+                    totalPages = data.TotalPages,
+                    previousPageLink,
+                    nextPageLink
+                };
+
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
                 var result = Mapper.Map<IEnumerable<CatalogType>>(data);
 
@@ -76,7 +91,7 @@ namespace RESTful.Catalog.API.Controllers
 
                     return NotFound();
                 }
-
+                
                 var result = Mapper.Map<CatalogType>(data);
 
                 return Ok(result);
@@ -87,11 +102,34 @@ namespace RESTful.Catalog.API.Controllers
 
                 return StatusCode(500, "A problem happened while handeling your request");
             }
-        }            
+        }
 
         #endregion
 
-       
+        private string CreateCatalogResourceUri(CatalogResourceParameters ctgResourcePrms, ResourceUriType uriType)
+        {
+            switch (uriType)
+            {
+                case ResourceUriType.PreviousPage:
+                    return _urlHelper.Link("GetCatalogs", new
+                    {
+                        pageNumber = ctgResourcePrms.PageNumber - 1,
+                        pageSize = ctgResourcePrms.PageSize
+                    });
+                case ResourceUriType.NextPage:
+                    return _urlHelper.Link("GetCatalogs", new
+                    {
+                        pageNumber = ctgResourcePrms.PageNumber + 1,
+                        pageSize = ctgResourcePrms.PageSize
+                    });
+                default:
+                    return _urlHelper.Link("GetCatalogs", new
+                    {
+                        pageNumber = ctgResourcePrms.PageNumber,
+                        pageSize = ctgResourcePrms.PageSize
+                    });
+            }
+        }
     }
 }
 

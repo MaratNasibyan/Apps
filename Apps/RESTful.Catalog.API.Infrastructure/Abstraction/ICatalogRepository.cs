@@ -7,7 +7,7 @@ namespace RESTful.Catalog.API.Infrastructure.Abstraction
 {
     public interface ICatalogRepository
     {
-        Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms);
+        Task<PagedList<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms);
         Task<CatalogType> GetCatalogItemByIdAsync(int id);      
         Task<IEnumerable<CatalogItem>> GetCatalogItemsByIdAsync(int id);
         Task<CatalogItem> GetCatalogItem(int Id, int itemId);

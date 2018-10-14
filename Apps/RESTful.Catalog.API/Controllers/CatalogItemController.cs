@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
-using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.JsonPatch;
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -23,9 +21,7 @@ namespace RESTful.Catalog.API.Controllers
         {
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
-        }
-
-       
+        }       
 
         public IActionResult Index()
         {
@@ -38,50 +34,32 @@ namespace RESTful.Catalog.API.Controllers
 
         [HttpGet(Name = "GetCatalogItemByIdAsync")]
         public async Task<IActionResult> GetCatalogItemByIdAsync(int id = 1)
-        {
-            try
+        {          
+            var data = await _catalogDataRepository.GetCatalogItemsByIdAsync(id);
+
+            if (data is null)
             {
-                var data = await _catalogDataRepository.GetCatalogItemsByIdAsync(id);
+                _logger.LogInformation($"With id {id} data wasn't found in Db");
 
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {id} data wasn't found in Db");
+                return NotFound();
+            }            
 
-                    return NotFound();
-                }            
-
-                return Ok(data);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
-
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
+            return Ok(data);           
         }
 
         [HttpGet("{itemId}", Name = "GetCatalogItem")]
         public async Task<IActionResult> GetCatalogItem(int Id, int itemId)
-        {
-            try
+        {           
+            var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
+
+            if (data is null)
             {
-                var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
+                _logger.LogInformation($"With id {itemId} data wasn't found in Db");
 
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {itemId} data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                return Ok(data);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
 
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
+            return Ok(data);          
         }
 
         #endregion
@@ -91,43 +69,35 @@ namespace RESTful.Catalog.API.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateCatalogItem([FromBody]CatalogItemDto ctgItem, int Id)
         {
-            try
+           
+            if (ctgItem is null)
             {
-                if (ctgItem is null)
-                {
-                    return BadRequest();
-                }
-
-                var data = await _catalogDataRepository.GetCatalogItemsByIdAsync(Id);
-
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {Id} data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                var result = Mapper.Map<CatalogItem>(ctgItem);
-
-                await _catalogDataRepository.CreateCatalogItem(Id, result);
-
-                if (!_catalogDataRepository.Save())
-                {
-                    return StatusCode(500, "A problem happened while handeling your request");
-                }
-
-                var resultDto = Mapper.Map<CatalogItemDto>(result);
-
-                return CreatedAtRoute(routeName: "GetCatalogItem",
-                                       routeValues: new { id = resultDto.CatalogTypeId, itemId = resultDto.Id },
-                                       value: resultDto);
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
 
+            var data = await _catalogDataRepository.GetCatalogItemsByIdAsync(Id);
+
+            if (data is null)
+            {
+                _logger.LogInformation($"With id {Id} data wasn't found in Db");
+
+                return NotFound();
+            }
+
+            var result = Mapper.Map<CatalogItem>(ctgItem);
+
+            await _catalogDataRepository.CreateCatalogItem(Id, result);
+
+            if (!_catalogDataRepository.Save())
+            {
                 return StatusCode(500, "A problem happened while handeling your request");
             }
+
+            var resultDto = Mapper.Map<CatalogItemDto>(result);
+
+            return CreatedAtRoute(routeName: "GetCatalogItem",
+                                    routeValues: new { id = resultDto.CatalogTypeId, itemId = resultDto.Id },
+                                    value: resultDto);           
         }
 
         #endregion
@@ -162,40 +132,31 @@ namespace RESTful.Catalog.API.Controllers
 
         [HttpPut("{itemId}")]
         public async Task<IActionResult> UpdateCatalogItem([FromBody]CatalogItemDto ctgItem, int Id, int itemId)
-        {
-            try
+        {          
+            if (ctgItem is null)
             {
-                if (ctgItem is null)
-                {
-                    return BadRequest();
-                }
-
-                var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
-
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {itemId} data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                var resultDto = Mapper.Map<CatalogItem>(ctgItem);
-
-                var result = _catalogDataRepository.UpdateCatalogItem(Id, itemId, resultDto);
-
-                if (!_catalogDataRepository.Save())
-                {
-                    return StatusCode(500, "A problem happened while handeling your request");
-                }
-
-                return Ok(data);
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
 
+            var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
+
+            if (data is null)
+            {
+                _logger.LogInformation($"With id {itemId} data wasn't found in Db");
+
+                return NotFound();
+            }
+
+            var resultDto = Mapper.Map<CatalogItem>(ctgItem);
+
+            var result = _catalogDataRepository.UpdateCatalogItem(Id, itemId, resultDto);
+
+            if (!_catalogDataRepository.Save())
+            {
                 return StatusCode(500, "A problem happened while handeling your request");
             }
+
+            return Ok(data);          
         }
 
         #endregion
@@ -204,44 +165,35 @@ namespace RESTful.Catalog.API.Controllers
 
         [HttpPatch("{itemId}")]
         public async Task<IActionResult> PartiallyUpdateCatalogItem([FromBody]JsonPatchDocument<CatalogItemDto> patchDoc, int Id, int itemId)
-        {
-            try
+        {            
+            if (patchDoc is null)
             {
-                if (patchDoc is null)
-                {
-                    return BadRequest();
-                }
-
-                var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
-
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {itemId} data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                var resultDto = Mapper.Map<CatalogItemDto>(data);
-
-                patchDoc.ApplyTo(resultDto);
-
-                Mapper.Map(resultDto, data);
-
-                var result = _catalogDataRepository.UpdateCatalogItem(Id, itemId, data);
-
-                if (!_catalogDataRepository.Save())
-                {
-                    return StatusCode(500, "A problem happened while handeling your request");
-                }
-
-                return NoContent();
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
 
+            var data = await _catalogDataRepository.GetCatalogItem(Id, itemId);
+
+            if (data is null)
+            {
+                _logger.LogInformation($"With id {itemId} data wasn't found in Db");
+
+                return NotFound();
+            }
+
+            var resultDto = Mapper.Map<CatalogItemDto>(data);
+
+            patchDoc.ApplyTo(resultDto);
+
+            Mapper.Map(resultDto, data);
+
+            var result = _catalogDataRepository.UpdateCatalogItem(Id, itemId, data);
+
+            if (!_catalogDataRepository.Save())
+            {
                 return StatusCode(500, "A problem happened while handeling your request");
             }
+
+            return NoContent();          
         }
 
         #endregion

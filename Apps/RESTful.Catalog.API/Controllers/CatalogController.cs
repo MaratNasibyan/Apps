@@ -1,5 +1,4 @@
-﻿using AutoMapper;                          
-using System;
+﻿using AutoMapper;                        
 using Newtonsoft.Json;
 using System.Threading.Tasks;              
 using System.Collections.Generic;          
@@ -40,68 +39,50 @@ namespace RESTful.Catalog.API.Controllers
         [HttpGet(Name = "GetCatalogs")]
         public async Task<IActionResult> GetCatalogTypes(CatalogResourceParameters ctgResourcePrms)
         {
-            try
+            var data = await _catalogDataRepository.GetCatalogTypesAsync(ctgResourcePrms);
+
+            if (data is null)
             {
-                var data = await _catalogDataRepository.GetCatalogTypesAsync(ctgResourcePrms);
+                _logger.LogInformation("Data wasn't found in Db");
 
-                if (data is null)
-                {
-                    _logger.LogInformation("Data wasn't found in Db");
-
-                    return NotFound();
-                }
-
-                var previousPageLink = data.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-                var nextPageLink = data.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
-
-                var paginationMetadata = new
-                {
-                    totalCount = data.TotalCount,
-                    pageSize = data.Pagesize,
-                    currentPage = data.CurrentPage,
-                    totalPages = data.TotalPages,
-                    previousPageLink,
-                    nextPageLink
-                };
-
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
-
-                var result = Mapper.Map<IEnumerable<CatalogType>>(data);
-
-                return Ok(result);
+                return NotFound();
             }
-            catch (Exception ex)
+
+            var previousPageLink = data.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = data.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
             {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
+                totalCount = data.TotalCount,
+                pageSize = data.Pagesize,
+                currentPage = data.CurrentPage,
+                totalPages = data.TotalPages,
+                previousPageLink,
+                nextPageLink
+            };
 
-                return StatusCode(500, "A problem happened while handeling your request");
-            }
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
+
+            var result = Mapper.Map<IEnumerable<CatalogType>>(data);
+
+            return Ok(result);         
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCatalogTypeByIdAsync(int id)
-        {
-            try
-            {               
-                var data = await _catalogDataRepository.GetCatalogItemByIdAsync(id);
+        {                        
+            var data = await _catalogDataRepository.GetCatalogItemByIdAsync(id);
 
-                if (data is null)
-                {
-                    _logger.LogInformation($"With id {id} data wasn't found in Db");
-
-                    return NotFound();
-                }
-                
-                var result = Mapper.Map<CatalogType>(data);
-
-                return Ok(result);
-            }
-            catch(Exception ex)
+            if (data is null)
             {
-                _logger.LogCritical($"Critical error while handeling the request {ex.Message}");
+                _logger.LogInformation($"With id {id} data wasn't found in Db");
 
-                return StatusCode(500, "A problem happened while handeling your request");
+                return NotFound();
             }
+                
+            var result = Mapper.Map<CatalogType>(data);
+
+            return Ok(result);          
         }
 
         #endregion

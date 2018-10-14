@@ -16,6 +16,7 @@ using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using RESTful.Catalog.API.Infra.Filters;
 
 namespace RESTful.Catalog.API
 {
@@ -47,10 +48,11 @@ namespace RESTful.Catalog.API
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
+                setupAction.Filters.Add(typeof(HttpGlobalExceptionFilter));
             })
-            .AddJsonOptions(options => 
+            .AddJsonOptions(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);         
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);                              
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
 
@@ -61,8 +63,6 @@ namespace RESTful.Catalog.API
 
                      return new UrlHelper(actionContext);
                  });
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

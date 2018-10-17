@@ -1,8 +1,10 @@
-﻿using RESTful.Catalog.API.Infrastructure.Models;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using RESTful.Catalog.API.Infrastructure.Models;
 
 namespace RESTful.Catalog.API.Infra.Models
 {
-    public class CatalogItemDto
+    public class CatalogItemDto : IValidatableObject
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -12,5 +14,17 @@ namespace RESTful.Catalog.API.Infra.Models
         public string PictureUri { get; set; }
         public int CatalogTypeId { get; set; }
         public CatalogType CatalogType { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var errors = new List<ValidationResult>();
+
+            if (Name.Length > 5)
+            {
+                errors.Add(new ValidationResult("Length of Name greater than 5"));
+            }
+
+            return errors;
+        }
     }
 }

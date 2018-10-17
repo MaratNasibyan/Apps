@@ -43,12 +43,13 @@ namespace RESTful.Catalog.API
                 cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
             });
 
-            services.AddMvc(setupAction =>
+           services.AddMvc(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter(setupAction));
                 setupAction.Filters.Add(typeof(HttpGlobalExceptionFilter));
+                setupAction.Filters.Add(typeof(ValidateModelStateFilter));                
             })
             .AddJsonOptions(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)

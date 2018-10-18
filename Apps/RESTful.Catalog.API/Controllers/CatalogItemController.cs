@@ -23,6 +23,7 @@ namespace RESTful.Catalog.API.Controllers
             _logger = logger;
         }       
 
+        [HttpOptions]
         public IActionResult Index()
         {
             return View();

@@ -17,6 +17,7 @@ using RESTful.Catalog.API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using RESTful.Catalog.API.Infra.Filters;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace RESTful.Catalog.API
 {
@@ -64,6 +65,18 @@ namespace RESTful.Catalog.API
 
                      return new UrlHelper(actionContext);
                  });
+
+            services.AddSwaggerGen(options =>
+            {
+                options.DescribeAllEnumsAsStrings();
+                options.SwaggerDoc("v1", new Info
+                {
+                    Title = "RESTFul.Catalog.API - Catalog HTTP API",
+                    Version = "v1",
+                    Description = "The Catalog Microservice HTTP API.",
+                    TermsOfService = "Terms Of Service"
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,17 +89,18 @@ namespace RESTful.Catalog.API
                 app.UseDeveloperExceptionPage();
             }
             else
-            {
-                //app.UseExceptionHandler(appBuilder =>
-                //{
-                //    appBuilder.Run(async context =>
-                //    {
-                //        context.Response.StatusCode = 500;
-                //        await context.Response.WriteAsync("A problem happened while handeling your request");
-                //    });
-                //});
+            {             
                 app.UseHsts();
             }
+
+        
+            app.UseStaticFiles();         
+
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
 
             app.UseHttpsRedirection();
             app.UseMvc();          

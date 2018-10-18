@@ -30,7 +30,8 @@ namespace RESTful.Catalog.API.Controllers
         #endregion
 
         #region GET
-
+     
+        [HttpOptions]
         public IActionResult Index()
         {
             return View();

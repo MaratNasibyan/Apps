@@ -75,7 +75,7 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
         {
             var updatedItem = await _dbContext.CatalogItems.Where(x => x.Id == itemId && x.CatalogTypeId == Id)
                          .FirstOrDefaultAsync();
-
+            //Marat
             if (!(updatedItem is null))
             {
                 updatedItem.Name = ctgItem.Name;
@@ -84,7 +84,7 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
         }
 
         #endregion
-
+        //Anahit
         public bool Save()
         {
             return (_dbContext.SaveChanges() >= 0);

@@ -22,7 +22,7 @@ namespace RESTful.Catalog.API.Controllers
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
         }       
-
+        // Alla Anna
         [HttpOptions]
         public IActionResult Index()
         {

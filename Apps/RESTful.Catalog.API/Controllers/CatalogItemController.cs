@@ -22,7 +22,7 @@ namespace RESTful.Catalog.API.Controllers
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
         }       
-        // Hi
+
         [HttpOptions]
         public IActionResult Index()
         {

@@ -14,7 +14,7 @@ namespace RESTful.Catalog.API.Controllers
     {
         private readonly ICatalogRepository _catalogDataRepository;
         private readonly ILogger<CatalogController> _logger;
-
+        // It is not a bug
         #region ctor
 
         public CatalogItemController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger)

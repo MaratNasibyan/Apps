@@ -198,5 +198,7 @@ namespace RESTful.Catalog.API.Controllers
         }
 
         #endregion
+
+        // Test cherry-pick 2
     }
 }

@@ -19,12 +19,12 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
 
         #region CatalogController
 
-        public async Task<PagedList<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
+        public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
         {
             var collection = await _dbContext.CatalogTypes
-                             .Include(x => x.CatalogItems).ToListAsync();                 
-                     
-            return  PagedList<CatalogType>.Create(collection, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);                   
+                             .Include(x => x.CatalogItems).ToListAsync();
+
+            return collection;
         }
 
         public async Task<CatalogType> GetCatalogItemByIdAsync(int id)

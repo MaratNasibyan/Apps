@@ -49,22 +49,24 @@ namespace RESTful.Catalog.API.Controllers
                 return NotFound();
             }
 
-            var previousPageLink = data.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = data.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
+            var pagedList = PagedList<CatalogType>.Create(data, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);
+
+            var previousPageLink = pagedList.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = pagedList.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
-                totalCount = data.TotalCount,
-                pageSize = data.Pagesize,
-                currentPage = data.CurrentPage,
-                totalPages = data.TotalPages,
+                totalCount = pagedList.TotalCount,
+                pageSize = pagedList.Pagesize,
+                currentPage = pagedList.CurrentPage,
+                totalPages = pagedList.TotalPages,
                 previousPageLink,
                 nextPageLink
             };
-
+            
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
-            var result = Mapper.Map<IEnumerable<CatalogType>>(data);
+            var result = Mapper.Map<IEnumerable<CatalogType>>(pagedList);           
 
             return Ok(result);         
         }

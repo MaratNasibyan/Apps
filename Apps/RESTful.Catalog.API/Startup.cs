@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,16 +22,9 @@ namespace RESTful.Catalog.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-           // Configuration = configuration;
-
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-              .SetBasePath(env.ContentRootPath)
-              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-              .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -55,7 +47,7 @@ namespace RESTful.Catalog.API
                 cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
             });
 
-           services.AddMvc(setupAction =>
+            services.AddMvc(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
@@ -69,7 +61,7 @@ namespace RESTful.Catalog.API
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
 
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();           
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>
                  {
                      var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
@@ -102,9 +94,8 @@ namespace RESTful.Catalog.API
             else
             {             
                 app.UseHsts();
-            }
+            }          
 
-        
             app.UseStaticFiles();         
 
             app.UseSwagger()

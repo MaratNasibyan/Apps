@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using static RESTful.Catalog.API.Infrastructure.Enums;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
+using RESTful.Catalog.API.Infrastructure.Utilities;
 using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Controllers

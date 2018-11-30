@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;          
 using Microsoft.AspNetCore.Mvc;            
 using Microsoft.Extensions.Logging;
-using RESTful.Catalog.API.Helpers;
+using static RESTful.Catalog.API.Infrastructure.Enums;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Helpers;
@@ -47,8 +47,8 @@ namespace RESTful.Catalog.API.Controllers
                 _logger.LogInformation("Data wasn't found in Db");
 
                 return NotFound();
-            }
-
+            }                   
+           
             var pagedList = PagedList<CatalogType>.Create(data, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);
 
             var previousPageLink = pagedList.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
@@ -96,19 +96,19 @@ namespace RESTful.Catalog.API.Controllers
             {
                 case ResourceUriType.PreviousPage:
                     return _urlHelper.Link("GetCatalogs", new
-                    {
+                    {                      
                         pageNumber = ctgResourcePrms.PageNumber - 1,
                         pageSize = ctgResourcePrms.PageSize
                     });
                 case ResourceUriType.NextPage:
                     return _urlHelper.Link("GetCatalogs", new
-                    {
+                    {                       
                         pageNumber = ctgResourcePrms.PageNumber + 1,
                         pageSize = ctgResourcePrms.PageSize
                     });
                 default:
                     return _urlHelper.Link("GetCatalogs", new
-                    {
+                    {                       
                         pageNumber = ctgResourcePrms.PageNumber,
                         pageSize = ctgResourcePrms.PageSize
                     });

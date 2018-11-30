@@ -2,6 +2,10 @@
 {
     public class Enums
     {
-
+        public enum ResourceUriType : byte
+        {
+            PreviousPage,
+            NextPage
+        }
     }
 }

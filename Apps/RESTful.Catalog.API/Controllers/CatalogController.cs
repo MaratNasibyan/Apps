@@ -9,6 +9,7 @@ using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Utilities;
 using RESTful.Catalog.API.Infrastructure.Helpers;
+using RESTful.Catalog.API.Infra.Helpers;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -16,16 +17,15 @@ namespace RESTful.Catalog.API.Controllers
     public class CatalogController : Controller
     {
         private readonly ICatalogRepository _catalogDataRepository;
-        private readonly ILogger<CatalogController> _logger;
-        private readonly IUrlHelper _urlHelper;
+        private readonly ILogger<CatalogController> _logger;       
+        private readonly IUriHelper _uriHelper;
+        #region ctor
 
-  		#region ctor
-
-        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUrlHelper urlHelper)
+        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUriHelper uriHelper)
         {
             _catalogDataRepository = catalogDataRepository;
-            _logger = logger;
-            _urlHelper = urlHelper;
+            _logger = logger;         
+            _uriHelper = uriHelper;
         }
 
         #endregion
@@ -52,8 +52,8 @@ namespace RESTful.Catalog.API.Controllers
            
             var pagedList = PagedList<CatalogType>.Create(data, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);
 
-            var previousPageLink = pagedList.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = pagedList.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
+            var previousPageLink = pagedList.HasPrevious ? _uriHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = pagedList.HasNext ? _uriHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
@@ -67,7 +67,7 @@ namespace RESTful.Catalog.API.Controllers
             
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
-            var result = Mapper.Map<IEnumerable<CatalogType>>(pagedList);           
+            var result = Mapper.Map<IEnumerable<CatalogType>>(pagedList);                       
 
             return Ok(result);         
         }
@@ -89,32 +89,7 @@ namespace RESTful.Catalog.API.Controllers
             return Ok(result);          
         }
 
-        #endregion
-
-        private string CreateCatalogResourceUri(CatalogResourceParameters ctgResourcePrms, ResourceUriType uriType)
-        {
-            switch (uriType)
-            {
-                case ResourceUriType.PreviousPage:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {                      
-                        pageNumber = ctgResourcePrms.PageNumber - 1,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-                case ResourceUriType.NextPage:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {                       
-                        pageNumber = ctgResourcePrms.PageNumber + 1,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-                default:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {                       
-                        pageNumber = ctgResourcePrms.PageNumber,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-            }
-        }
+        #endregion      
     }
 }
 

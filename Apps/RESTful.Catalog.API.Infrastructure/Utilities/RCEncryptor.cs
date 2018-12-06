@@ -7,7 +7,7 @@ namespace RESTful.Catalog.API.Infrastructure
 {
     public class RCEncryptor
     {
-        private static string ENCRYPTION_KEY = "MAKV2SPBNI99212";
+        private const string ENCRYPTION_KEY = "MAKV2SPBNI99212";
 
         public static string Decrypt(string cipherText)
         {

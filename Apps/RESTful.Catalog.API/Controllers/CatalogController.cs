@@ -46,7 +46,7 @@ namespace RESTful.Catalog.API.Controllers
             if (data is null)
             {
                 _logger.LogInformation("Data wasn't found in Db");
-
+                
                 return NotFound();
             }                   
            
@@ -81,12 +81,12 @@ namespace RESTful.Catalog.API.Controllers
             {
                 _logger.LogInformation($"With id {id} data wasn't found in Db");
 
-                return NotFound();
+                return NotFound(ResponseError.Create(string.Empty));
             }
                 
             var result = Mapper.Map<CatalogType>(data);
 
-            return Ok(result);          
+            return Ok(ResponseSuccess.Create(result));          
         }
 
         #endregion      

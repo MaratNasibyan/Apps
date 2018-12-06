@@ -2,16 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.EntityConfigurations;
-using RESTful.Catalog.API.Infrastructure.ModelBuilderExtenshions;
+using RESTful.Catalog.API.Infrastructure.Extenshions;
+using RESTful.Catalog.API.Infrastructure.Settings;
+
 
 namespace RESTful.Catalog.API.Infrastructure
 {
     public class CatalogContext : DbContext
     {
-        private readonly IOptions<AppSettings> _appSettings;
-        public CatalogContext(DbContextOptions<CatalogContext> options, IOptions<AppSettings> appSettings) : base(options)
+        private readonly IOptions<AppSettings> _settings;
+        public CatalogContext(DbContextOptions<CatalogContext> options, IOptions<AppSettings> settings) : base(options)
         {
-            _appSettings = appSettings;
+            _settings = settings;
+
             Database.EnsureCreated();
         }
 
@@ -28,7 +31,7 @@ namespace RESTful.Catalog.API.Infrastructure
      
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(_appSettings.Value.ConnectionString);
+            optionsBuilder.UseSqlServer(_settings.Value.ConnectionString);
         }
     }   
 }

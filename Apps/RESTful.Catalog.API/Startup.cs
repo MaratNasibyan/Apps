@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using RESTful.Catalog.API.Infra.Filters;
 using Swashbuckle.AspNetCore.Swagger;
+using RESTful.Catalog.API.Infrastructure.Settings;
 using RESTful.Catalog.API.Infra.Helpers;
 
 namespace RESTful.Catalog.API

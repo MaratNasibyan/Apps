@@ -1,24 +1,25 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
+using RESTful.Catalog.API.Infra.Mapper;
+using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Infra.Filters;
 using RESTful.Catalog.API.Infrastructure;
+using RESTful.Catalog.API.Infrastructure.Settings;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using RESTful.Catalog.API.Infra.Filters;
-using Swashbuckle.AspNetCore.Swagger;
-using RESTful.Catalog.API.Infrastructure.Settings;
-using RESTful.Catalog.API.Infra.Helpers;
-using RESTful.Catalog.API.Infra.Mapper;
-using System;
 
 namespace RESTful.Catalog.API
 {
@@ -38,11 +39,11 @@ namespace RESTful.Catalog.API
         //                 options.UseSqlServer(Configuration["ConnectionString"]));
             services.AddOptions();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-          
+                     
             services.AddDbContext<CatalogContext>();
 
             services.AddSingleton<IMapper>(MapperConfig.GetMapper());
-
+  
             //Mapper.Initialize(cfg =>
             //{
             //    cfg.CreateMap<CatalogType, CatalogTypeDto>().ForMember(c => c.Type, f => f.Ignore());
@@ -75,7 +76,7 @@ namespace RESTful.Catalog.API
                  });
 
             services.AddScoped<IUriHelper, UriHelper>();
-
+       
             services.AddSwaggerGen(options =>
             {
                 options.DescribeAllEnumsAsStrings();
@@ -88,12 +89,12 @@ namespace RESTful.Catalog.API
                 });
             });
         }
-
+      
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
-        {
+        {                       
             loggerFactory.AddNLog();
-       
+      
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -102,7 +103,7 @@ namespace RESTful.Catalog.API
             {             
                 app.UseHsts();
             }
-
+          
             MapperExtension.Init(serviceProvider.GetService<IMapper>());
 
             app.UseStaticFiles();         
@@ -114,7 +115,12 @@ namespace RESTful.Catalog.API
                 });
 
             app.UseHttpsRedirection();
-            app.UseMvc();          
+            app.UseMvc();
+
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Catalog API");
+            });
         }
     }
 }

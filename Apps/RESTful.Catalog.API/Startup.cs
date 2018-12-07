@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infrastructure;
-using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -19,6 +17,8 @@ using RESTful.Catalog.API.Infra.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using RESTful.Catalog.API.Infrastructure.Settings;
 using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Infra.Mapper;
+using System;
 
 namespace RESTful.Catalog.API
 {
@@ -41,13 +41,16 @@ namespace RESTful.Catalog.API
           
             services.AddDbContext<CatalogContext>();
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<CatalogType, CatalogTypeDto>();
-                cfg.CreateMap<CatalogItem, CatalogItemDto>();
-                cfg.CreateMap<CatalogItem, CatalogItemForUpdateDto>();
-                cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
-            });
+            services.AddSingleton<IMapper>(MapperConfig.GetMapper());
+
+            //Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<CatalogType, CatalogTypeDto>().ForMember(c => c.Type, f => f.Ignore());
+            //    cfg.CreateMap<CatalogType, CatalogTypeDto>().ReverseMap().ForMember(c => c.Type, f => f.Ignore());
+            //    cfg.CreateMap<CatalogItem, CatalogItemDto>();
+            //    cfg.CreateMap<CatalogItem, CatalogItemForUpdateDto>();
+            //    cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
+            //});
 
             services.AddMvc(setupAction =>
             {
@@ -87,10 +90,10 @@ namespace RESTful.Catalog.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddNLog();
-            
+       
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -98,7 +101,9 @@ namespace RESTful.Catalog.API
             else
             {             
                 app.UseHsts();
-            }          
+            }
+
+            MapperExtension.Init(serviceProvider.GetService<IMapper>());
 
             app.UseStaticFiles();         
 

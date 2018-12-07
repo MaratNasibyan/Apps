@@ -1,15 +1,16 @@
-﻿using AutoMapper;                        
-using Newtonsoft.Json;
-using System.Threading.Tasks;              
-using System.Collections.Generic;          
-using Microsoft.AspNetCore.Mvc;            
+﻿using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using static RESTful.Catalog.API.Infrastructure.Enums;
-using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Abstraction;
-using RESTful.Catalog.API.Infrastructure.Utilities;
-using RESTful.Catalog.API.Infrastructure.Helpers;
+using RESTful.Catalog.API.Infra;
+using RESTful.Catalog.API.Infra.Models;
+using RESTful.Catalog.API.Infra.Mapper;
 using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Infrastructure.Models;
+using RESTful.Catalog.API.Infrastructure.Helpers;
+using RESTful.Catalog.API.Infrastructure.Abstraction;
+using static RESTful.Catalog.API.Infrastructure.Enums;
+
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -47,10 +48,10 @@ namespace RESTful.Catalog.API.Controllers
             {
                 _logger.LogInformation("Data wasn't found in Db");
                 
-                return NotFound();
-            }                   
-           
-            var pagedList = PagedList<CatalogType>.Create(data, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);
+                return NotFound(ResponseError.Create(string.Empty));
+            }
+
+            var pagedList = data.ToPagedList(ctgResourcePrms);
 
             var previousPageLink = pagedList.HasPrevious ? _uriHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
             var nextPageLink = pagedList.HasNext ? _uriHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
@@ -67,9 +68,9 @@ namespace RESTful.Catalog.API.Controllers
             
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
-            var result = Mapper.Map<IEnumerable<CatalogType>>(pagedList);                       
+            var apiResult = pagedList.ToViewModelList<CatalogType, CatalogTypeDto>();                            
 
-            return Ok(result);         
+            return Ok(ResponseSuccess.Create(apiResult));         
         }
 
         [HttpGet("{id}")]
@@ -83,12 +84,11 @@ namespace RESTful.Catalog.API.Controllers
 
                 return NotFound(ResponseError.Create(string.Empty));
             }
-                
-            var result = Mapper.Map<CatalogType>(data);
 
-            return Ok(ResponseSuccess.Create(result));          
+            var apiResult = data.ToViewModel<CatalogType, CatalogTypeDto>();      
+           
+            return Ok(ResponseSuccess.Create(apiResult));          
         }
-
         #endregion      
     }
 }

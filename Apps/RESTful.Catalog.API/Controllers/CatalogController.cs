@@ -2,15 +2,15 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RESTful.Catalog.API.Infra;
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infra.Mapper;
 using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Utilities.Infra;
+using RESTful.Catalog.API.Utilities.Resource;
+using RESTful.Catalog.API.Utilities.Extenshions;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Helpers;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
-using static RESTful.Catalog.API.Infrastructure.Enums;
-
+using static RESTful.Catalog.API.Utilities.Infra.Enums;
 
 namespace RESTful.Catalog.API.Controllers
 {

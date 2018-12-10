@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RESTful.Catalog.API.Infrastructure.Resource {
+namespace RESTful.Catalog.API.Utilities.Resource {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace RESTful.Catalog.API.Infrastructure.Resource {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RESTful.Catalog.API.Infrastructure.Resource.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RESTful.Catalog.API.Utilities.Resource.Resource", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

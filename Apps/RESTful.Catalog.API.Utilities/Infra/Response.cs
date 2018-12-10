@@ -1,4 +1,4 @@
-﻿namespace RESTful.Catalog.API.Infrastructure.Helpers
+﻿namespace RESTful.Catalog.API.Utilities.Infra
 {
     public class Response
     {
@@ -25,8 +25,8 @@
                     InternalMessage = internalMessage,
                     DisplayMessage = displayMessage
                 }
-            };       
-          
+            };
+
             return response;
         }
     }
@@ -42,7 +42,7 @@
                 Success = true,
                 Data = data,
                 Message = message
-            };           
+            };
 
             return response;
         }

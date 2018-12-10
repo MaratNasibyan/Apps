@@ -1,6 +1,5 @@
-﻿namespace RESTful.Catalog.API.Infrastructure.Helpers
-{
-    public abstract  class ApiResourceParameters
+﻿namespace RESTful.Catalog.API.Utilities.Resource
+{    public abstract class ApiResourceParameters
     {
         const int maxPageSize = 20;
         public int PageNumber { get; set; } = 1;

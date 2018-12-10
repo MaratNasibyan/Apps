@@ -1,4 +1,4 @@
-﻿namespace RESTful.Catalog.API.Infrastructure.Settings
+﻿namespace RESTful.Catalog.API.Utilities.Settings
 {
     public class AppSettings
     {

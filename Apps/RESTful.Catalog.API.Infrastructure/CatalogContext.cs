@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using RESTful.Catalog.API.Utilities.Settings;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.EntityConfigurations;
 using RESTful.Catalog.API.Infrastructure.Extenshions;
-using RESTful.Catalog.API.Infrastructure.Settings;
-
+using RESTful.Catalog.API.Infrastructure.EntityConfigurations;
 
 namespace RESTful.Catalog.API.Infrastructure
 {

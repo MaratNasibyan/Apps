@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Security.Cryptography;
 
-namespace RESTful.Catalog.API.Infrastructure
+namespace RESTful.Catalog.API.Utilities.Infra
 {
     public class RCEncryptor
     {

@@ -1,4 +1,4 @@
-﻿namespace RESTful.Catalog.API.Infrastructure
+﻿namespace RESTful.Catalog.API.Utilities.Infra
 {
     public class Enums
     {

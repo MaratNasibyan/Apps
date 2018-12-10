@@ -17,7 +17,7 @@ using RESTful.Catalog.API.Infra.Mapper;
 using RESTful.Catalog.API.Infra.Helpers;
 using RESTful.Catalog.API.Infra.Filters;
 using RESTful.Catalog.API.Infrastructure;
-using RESTful.Catalog.API.Infrastructure.Settings;
+using RESTful.Catalog.API.Utilities.Settings;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
 

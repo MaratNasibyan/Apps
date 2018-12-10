@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RESTful.Catalog.API.Infrastructure\RESTful.Catalog.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\RESTful.Catalog.API.Utilities\RESTful.Catalog.API.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

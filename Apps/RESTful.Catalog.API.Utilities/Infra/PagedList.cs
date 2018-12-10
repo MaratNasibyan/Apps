@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-namespace RESTful.Catalog.API.Infrastructure.Utilities
+namespace RESTful.Catalog.API.Utilities.Infra
 {
     public class PagedList<T> : List<T>
     {

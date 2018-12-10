@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using RESTful.Catalog.API.Utilities.Resource;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Helpers;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories

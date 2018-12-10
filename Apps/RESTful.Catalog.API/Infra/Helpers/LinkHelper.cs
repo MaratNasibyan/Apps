@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RESTful.Catalog.API.Infrastructure.Helpers;
-using static RESTful.Catalog.API.Infrastructure.Enums;
+using RESTful.Catalog.API.Utilities.Resource;
+using static RESTful.Catalog.API.Utilities.Infra.Enums;
 
 namespace RESTful.Catalog.API.Infra.Helpers
 {

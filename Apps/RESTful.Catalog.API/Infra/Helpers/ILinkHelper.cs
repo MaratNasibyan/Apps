@@ -3,7 +3,7 @@ using static RESTful.Catalog.API.Infrastructure.Enums;
 
 namespace RESTful.Catalog.API.Infra.Helpers
 {
-    public interface IUriHelper
+    public interface ILinkHelper
     {
         string GenerateLink(string routeName, ApiResourceParameters apiResourceParameters, ResourceUriType uriType);
     }

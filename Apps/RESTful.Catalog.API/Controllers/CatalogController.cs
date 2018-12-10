@@ -18,15 +18,15 @@ namespace RESTful.Catalog.API.Controllers
     public class CatalogController : Controller
     {
         private readonly ICatalogRepository _catalogDataRepository;
-        private readonly ILogger<CatalogController> _logger;       
-        private readonly IUriHelper _uriHelper;
+        private readonly ILogger<CatalogController> _logger;    
+        private readonly ILinkHelper _linkHelper;
         #region ctor
 
-        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUriHelper uriHelper)
+        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, ILinkHelper linkHelper)
         {
             _catalogDataRepository = catalogDataRepository;
-            _logger = logger;         
-            _uriHelper = uriHelper;
+            _logger = logger;
+            _linkHelper = linkHelper;
         }
 
         #endregion
@@ -53,8 +53,8 @@ namespace RESTful.Catalog.API.Controllers
 
             var pagedList = data.ToPagedList(ctgResourcePrms);
 
-            var previousPageLink = pagedList.HasPrevious ? _uriHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = pagedList.HasNext ? _uriHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
+            var previousPageLink = pagedList.HasPrevious ? _linkHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = pagedList.HasNext ? _linkHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {

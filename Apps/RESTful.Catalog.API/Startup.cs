@@ -69,14 +69,13 @@ namespace RESTful.Catalog.API
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();           
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>
-                 {
-                     var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
+            {
+                var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
 
-                     return new UrlHelper(actionContext);
-                 });
-
-            services.AddScoped<IUriHelper, UriHelper>();
-       
+                return new UrlHelper(actionContext);
+            });
+            
+            services.AddScoped<ILinkHelper, LinkHelper>();
             services.AddSwaggerGen(options =>
             {
                 options.DescribeAllEnumsAsStrings();
@@ -109,10 +108,10 @@ namespace RESTful.Catalog.API
             app.UseStaticFiles();         
 
             app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                });
+               .UseSwaggerUI(c =>
+               {
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+               });
 
             app.UseHttpsRedirection();
             app.UseMvc();

@@ -4,11 +4,11 @@ using static RESTful.Catalog.API.Infrastructure.Enums;
 
 namespace RESTful.Catalog.API.Infra.Helpers
 {
-    public class UriHelper : IUriHelper
+    public class LinkHelper : ILinkHelper
     {
         private readonly IUrlHelper _urlHelper;
 
-        public UriHelper(IUrlHelper urlHelper)
+        public LinkHelper(IUrlHelper urlHelper)
         {
             _urlHelper = urlHelper;
         }

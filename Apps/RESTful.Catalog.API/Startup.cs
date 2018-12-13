@@ -35,8 +35,25 @@ namespace RESTful.Catalog.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-        //    services.AddDbContext<CatalogContext>(options =>
-        //                 options.UseSqlServer(Configuration["ConnectionString"]));
+            #region Autentication
+
+            services.AddMvcCore()
+                    .AddAuthorization()
+                    .AddJsonFormatters();
+
+            services.AddAuthentication("Bearer")
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = "http://localhost:3000";
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = "catalogapi";
+                    });
+
+            #endregion
+
+
+            //    services.AddDbContext<CatalogContext>(options =>
+            //                 options.UseSqlServer(Configuration["ConnectionString"]));
             services.AddOptions();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
                      
@@ -113,6 +130,7 @@ namespace RESTful.Catalog.API
                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                });
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
 

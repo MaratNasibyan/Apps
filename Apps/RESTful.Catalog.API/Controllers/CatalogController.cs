@@ -1,13 +1,16 @@
-﻿using AutoMapper;                        
-using Newtonsoft.Json;
-using System.Threading.Tasks;              
-using System.Collections.Generic;          
-using Microsoft.AspNetCore.Mvc;            
+﻿using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RESTful.Catalog.API.Helpers;
+using RESTful.Catalog.API.Infra.Models;
+using RESTful.Catalog.API.Infra.Mapper;
+using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Utilities.Infra;
+using RESTful.Catalog.API.Utilities.Resource;
+using RESTful.Catalog.API.Utilities.Extenshions;
 using RESTful.Catalog.API.Infrastructure.Models;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
-using RESTful.Catalog.API.Infrastructure.Helpers;
+using static RESTful.Catalog.API.Utilities.Infra.Enums;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -15,16 +18,15 @@ namespace RESTful.Catalog.API.Controllers
     public class CatalogController : Controller
     {
         private readonly ICatalogRepository _catalogDataRepository;
-        private readonly ILogger<CatalogController> _logger;
-        private readonly IUrlHelper _urlHelper;
+        private readonly ILogger<CatalogController> _logger;    
+        private readonly ILinkHelper _linkHelper;
+        #region ctor
 
-  		#region ctor
-
-        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, IUrlHelper urlHelper)
+        public CatalogController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger, ILinkHelper linkHelper)
         {
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
-            _urlHelper = urlHelper;
+            _linkHelper = linkHelper;
         }
 
         #endregion
@@ -45,28 +47,30 @@ namespace RESTful.Catalog.API.Controllers
             if (data is null)
             {
                 _logger.LogInformation("Data wasn't found in Db");
-
-                return NotFound();
+                
+                return NotFound(ResponseError.Create(string.Empty));
             }
 
-            var previousPageLink = data.HasPrevious ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = data.HasNext ? CreateCatalogResourceUri(ctgResourcePrms, ResourceUriType.NextPage) : null;
+            var pagedList = data.ToPagedList(ctgResourcePrms);
+
+            var previousPageLink = pagedList.HasPrevious ? _linkHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = pagedList.HasNext ? _linkHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
-                totalCount = data.TotalCount,
-                pageSize = data.Pagesize,
-                currentPage = data.CurrentPage,
-                totalPages = data.TotalPages,
+                totalCount = pagedList.TotalCount,
+                pageSize = pagedList.Pagesize,
+                currentPage = pagedList.CurrentPage,
+                totalPages = pagedList.TotalPages,
                 previousPageLink,
                 nextPageLink
             };
-
+            
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
-            var result = Mapper.Map<IEnumerable<CatalogType>>(data);
+            var apiResult = pagedList.ToViewModelList<CatalogType, CatalogTypeDto>();                            
 
-            return Ok(result);         
+            return Ok(ResponseSuccess.Create(apiResult));         
         }
 
         [HttpGet("{id}")]
@@ -78,40 +82,14 @@ namespace RESTful.Catalog.API.Controllers
             {
                 _logger.LogInformation($"With id {id} data wasn't found in Db");
 
-                return NotFound();
+                return NotFound(ResponseError.Create(string.Empty));
             }
-                
-            var result = Mapper.Map<CatalogType>(data);
 
-            return Ok(result);          
+            var apiResult = data.ToViewModel<CatalogType, CatalogTypeDto>();      
+           
+            return Ok(ResponseSuccess.Create(apiResult));          
         }
-
-        #endregion
-
-        private string CreateCatalogResourceUri(CatalogResourceParameters ctgResourcePrms, ResourceUriType uriType)
-        {
-            switch (uriType)
-            {
-                case ResourceUriType.PreviousPage:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {
-                        pageNumber = ctgResourcePrms.PageNumber - 1,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-                case ResourceUriType.NextPage:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {
-                        pageNumber = ctgResourcePrms.PageNumber + 1,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-                default:
-                    return _urlHelper.Link("GetCatalogs", new
-                    {
-                        pageNumber = ctgResourcePrms.PageNumber,
-                        pageSize = ctgResourcePrms.PageSize
-                    });
-            }
-        }
+        #endregion      
     }
 }
 

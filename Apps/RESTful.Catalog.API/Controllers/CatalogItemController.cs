@@ -14,7 +14,7 @@ namespace RESTful.Catalog.API.Controllers
     {
         private readonly ICatalogRepository _catalogDataRepository;
         private readonly ILogger<CatalogController> _logger;
-        //Test cherry-pick
+        // It is not a bug
         #region ctor
 
         public CatalogItemController(ICatalogRepository catalogDataRepository, ILogger<CatalogController> logger)
@@ -22,7 +22,7 @@ namespace RESTful.Catalog.API.Controllers
             _catalogDataRepository = catalogDataRepository;
             _logger = logger;
         }       
-        // Alla Anna
+
         [HttpOptions]
         public IActionResult Index()
         {
@@ -198,7 +198,5 @@ namespace RESTful.Catalog.API.Controllers
         }
 
         #endregion
-
-        // Test cherry-pick 2
     }
 }

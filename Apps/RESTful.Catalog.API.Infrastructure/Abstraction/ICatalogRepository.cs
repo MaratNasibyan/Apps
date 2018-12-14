@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
 using System.Collections.Generic;
+using RESTful.Catalog.API.Utilities.Resource;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Helpers;
 
 namespace RESTful.Catalog.API.Infrastructure.Abstraction
 {
     public interface ICatalogRepository
     {
-        Task<PagedList<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms);
+        Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms);
         Task<CatalogType> GetCatalogItemByIdAsync(int id);      
         Task<IEnumerable<CatalogItem>> GetCatalogItemsByIdAsync(int id);
         Task<CatalogItem> GetCatalogItem(int Id, int itemId);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RESTful.Catalog.API.Infrastructure.Models;
 
-namespace RESTful.Catalog.API.Infrastructure.ModelBuilderExtenshions
+namespace RESTful.Catalog.API.Infrastructure.Extenshions
 {
     public static class ModelBuilderExtensions
     {

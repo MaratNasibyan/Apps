@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace RESTful.Catalog.API.Infrastructure.Helpers
-{
-    public class CatalogResourceParameters
+﻿namespace RESTful.Catalog.API.Utilities.Resource
+{    public abstract class ApiResourceParameters
     {
         const int maxPageSize = 20;
         public int PageNumber { get; set; } = 1;
-        public int _pageSize { get; set; } = 10;
+        public int _pageSize { get; set; } = 1;
 
         public int PageSize
         {

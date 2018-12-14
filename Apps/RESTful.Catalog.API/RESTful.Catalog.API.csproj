@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="2.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
@@ -35,6 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RESTful.Catalog.API.Infrastructure\RESTful.Catalog.API.Infrastructure.csproj" />
+    <ProjectReference Include="..\RESTful.Catalog.API.Utilities\RESTful.Catalog.API.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using RESTful.Catalog.API.Utilities.Resource;
 using RESTful.Catalog.API.Infrastructure.Models;
-using RESTful.Catalog.API.Infrastructure.Helpers;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories
@@ -19,12 +19,12 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
 
         #region CatalogController
 
-        public async Task<PagedList<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
+        public async Task<IEnumerable<CatalogType>> GetCatalogTypesAsync(CatalogResourceParameters ctgResourcePrms)
         {
             var collection = await _dbContext.CatalogTypes
-                             .Include(x => x.CatalogItems).ToListAsync();                 
-                     
-            return  PagedList<CatalogType>.Create(collection, ctgResourcePrms.PageNumber, ctgResourcePrms.PageSize);                   
+                             .Include(x => x.CatalogItems).ToListAsync();
+
+            return collection;
         }
 
         public async Task<CatalogType> GetCatalogItemByIdAsync(int id)
@@ -75,7 +75,7 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
         {
             var updatedItem = await _dbContext.CatalogItems.Where(x => x.Id == itemId && x.CatalogTypeId == Id)
                          .FirstOrDefaultAsync();
-            //Marat
+
             if (!(updatedItem is null))
             {
                 updatedItem.Name = ctgItem.Name;
@@ -84,7 +84,7 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
         }
 
         #endregion
-        //Anahit
+
         public bool Save()
         {
             return (_dbContext.SaveChanges() >= 0);

@@ -1,23 +1,25 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Newtonsoft.Json;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using RESTful.Catalog.API.Infra.Models;
+using Swashbuckle.AspNetCore.Swagger;
+using RESTful.Catalog.API.Infra.Mapper;
+using RESTful.Catalog.API.Infra.Helpers;
+using RESTful.Catalog.API.Infra.Filters;
 using RESTful.Catalog.API.Infrastructure;
-using RESTful.Catalog.API.Infrastructure.Models;
+using RESTful.Catalog.API.Utilities.Settings;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using RESTful.Catalog.API.Infra.Filters;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace RESTful.Catalog.API
 {
@@ -33,18 +35,42 @@ namespace RESTful.Catalog.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CatalogContext>(options =>
-                         options.UseSqlServer(Configuration["ConnectionString"]));
+            #region Autentication
 
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<CatalogType, CatalogTypeDto>();
-                cfg.CreateMap<CatalogItem, CatalogItemDto>();
-                cfg.CreateMap<CatalogItem, CatalogItemForUpdateDto>();
-                cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
-            });
+            services.AddMvcCore()
+                    .AddAuthorization()
+                    .AddJsonFormatters();
 
-           services.AddMvc(setupAction =>
+            services.AddAuthentication("Bearer")
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = "http://localhost:3000";
+                        options.RequireHttpsMetadata = false;
+                        options.ApiName = "catalogapi";
+                    });
+
+            #endregion
+
+
+            //    services.AddDbContext<CatalogContext>(options =>
+            //                 options.UseSqlServer(Configuration["ConnectionString"]));
+            services.AddOptions();
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+                     
+            services.AddDbContext<CatalogContext>();
+
+            services.AddSingleton<IMapper>(MapperConfig.GetMapper());
+  
+            //Mapper.Initialize(cfg =>
+            //{
+            //    cfg.CreateMap<CatalogType, CatalogTypeDto>().ForMember(c => c.Type, f => f.Ignore());
+            //    cfg.CreateMap<CatalogType, CatalogTypeDto>().ReverseMap().ForMember(c => c.Type, f => f.Ignore());
+            //    cfg.CreateMap<CatalogItem, CatalogItemDto>();
+            //    cfg.CreateMap<CatalogItem, CatalogItemForUpdateDto>();
+            //    cfg.CreateMap<CatalogItemForUpdateDto, CatalogItem>();
+            //});
+
+            services.AddMvc(setupAction =>
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
@@ -58,14 +84,15 @@ namespace RESTful.Catalog.API
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
 
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();           
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>
-                 {
-                     var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
+            {
+                var actionContext = implementationFactory.GetService<IActionContextAccessor>().ActionContext;
 
-                     return new UrlHelper(actionContext);
-                 });
-
+                return new UrlHelper(actionContext);
+            });
+            
+            services.AddScoped<ILinkHelper, LinkHelper>();
             services.AddSwaggerGen(options =>
             {
                 options.DescribeAllEnumsAsStrings();
@@ -78,12 +105,12 @@ namespace RESTful.Catalog.API
                 });
             });
         }
-
+      
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+        {                       
             loggerFactory.AddNLog();
-            
+      
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -92,18 +119,25 @@ namespace RESTful.Catalog.API
             {             
                 app.UseHsts();
             }
+          
+            MapperExtension.Init(serviceProvider.GetService<IMapper>());
 
-        
             app.UseStaticFiles();         
 
             app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                });
+               .UseSwaggerUI(c =>
+               {
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+               });
 
+            app.UseAuthentication();
             app.UseHttpsRedirection();
-            app.UseMvc();          
+            app.UseMvc();
+
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Catalog API");
+            });
         }
     }
 }

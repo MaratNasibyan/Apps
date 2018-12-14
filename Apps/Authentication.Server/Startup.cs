@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Authentication.Server.Configuration;
 
 namespace Authentication.Server
 {
@@ -22,8 +22,9 @@ namespace Authentication.Server
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddIdentityServer()
+            services.AddIdentityServer()              
                     .AddDeveloperSigningCredential()
+                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryClients(Config.GetClients());
         }

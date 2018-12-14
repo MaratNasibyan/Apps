@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RESTful.Catalog.API.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RESTful.Catalog.API.Utilities", "RESTful.Catalog.API.Utilities\RESTful.Catalog.API.Utilities.csproj", "{6CC7B326-7B68-415D-9029-C6D2172266C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Server", "Authentication.Server\Authentication.Server.csproj", "{9B7964ED-EC71-44E7-BC92-2293FF19D706}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Server", "Authentication.Server\Authentication.Server.csproj", "{9B7964ED-EC71-44E7-BC92-2293FF19D706}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

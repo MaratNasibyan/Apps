@@ -1,15 +1,24 @@
 ﻿using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace Authentication.Server
+namespace Authentication.Server.Configuration
 {
     public class Config
     {
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new List<IdentityResource>
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+        }
+
         public static IEnumerable<ApiResource> GetApiResources()
         {
             return new List<ApiResource>
              {
-                  new ApiResource("catalogapi", "My API")
+                  new ApiResource("catalogapi", "RESTful.Catalog.API")
              };
         }
 

@@ -8,9 +8,4 @@
     <ProjectReference Include="..\RESTful.Catalog.API.Infrastructure\RESTful.Catalog.API.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstraction\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

@@ -20,6 +20,8 @@ using RESTful.Catalog.API.Infrastructure;
 using RESTful.Catalog.API.Utilities.Settings;
 using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
+using RESTful.Catalog.API.Services.Services;
+using RESTful.Catalog.API.Services.Abstraction;
 
 namespace RESTful.Catalog.API
 {
@@ -83,6 +85,8 @@ namespace RESTful.Catalog.API
             .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);                              
 
             services.AddScoped<ICatalogRepository, CatalogRepository>();
+
+            services.AddTransient<ICatalogService, CatalogService>();
 
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();           
             services.AddScoped<IUrlHelper, UrlHelper>(implementationFactory =>

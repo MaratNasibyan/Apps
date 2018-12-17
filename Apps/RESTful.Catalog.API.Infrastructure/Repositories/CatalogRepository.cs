@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using RESTful.Catalog.API.Infrastructure.Abstraction;
 
 namespace RESTful.Catalog.API.Infrastructure.Repositories
 {
-    public  class CatalogRepository : ICatalogRepository
+    public class CatalogRepository : ICatalogRepository, IDisposable
     {
         CatalogContext _dbContext;
 
@@ -89,5 +90,29 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
         {
             return (_dbContext.SaveChanges() >= 0);
         }
+
+        #region Dispose
+
+        private bool disposed = false;
+
+        public virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _dbContext.Dispose();
+                }
+                this.disposed = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

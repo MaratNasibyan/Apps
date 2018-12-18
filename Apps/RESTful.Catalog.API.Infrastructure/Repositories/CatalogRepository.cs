@@ -11,11 +11,11 @@ namespace RESTful.Catalog.API.Infrastructure.Repositories
 {
     public class CatalogRepository : ICatalogRepository, IDisposable
     {
-        CatalogContext _dbContext;
+        private readonly CatalogContext _dbContext;
 
         public CatalogRepository(CatalogContext dbContext)
         {
-            _dbContext = dbContext;
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         #region CatalogController

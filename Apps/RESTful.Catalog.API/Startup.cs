@@ -53,9 +53,22 @@ namespace RESTful.Catalog.API
 
             #endregion
 
+            #region Cors
 
-            //    services.AddDbContext<CatalogContext>(options =>
-            //                 options.UseSqlServer(Configuration["ConnectionString"]));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                        builder =>
+                        {                         
+                            builder.AllowAnyHeader();
+                            builder.AllowAnyOrigin();
+                            builder.AllowAnyMethod();
+                            builder.AllowCredentials();
+                        });
+            });
+
+            #endregion
+           
             services.AddOptions();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
                      
@@ -96,7 +109,8 @@ namespace RESTful.Catalog.API
                 return new UrlHelper(actionContext);
             });
             
-            services.AddScoped<ILinkHelper, LinkHelper>();
+            services.AddScoped<ILinkHelper, LinkHelper>();           
+
             services.AddSwaggerGen(options =>
             {
                 options.DescribeAllEnumsAsStrings();
@@ -112,7 +126,7 @@ namespace RESTful.Catalog.API
       
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
-        {                       
+        {           
             loggerFactory.AddNLog();
       
             if (env.IsDevelopment())
@@ -126,21 +140,21 @@ namespace RESTful.Catalog.API
           
             MapperExtension.Init(serviceProvider.GetService<IMapper>());
 
-            app.UseStaticFiles();         
-
+            app.UseStaticFiles();
+           
             app.UseSwagger()
                .UseSwaggerUI(c =>
                {
-                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                   c.SwaggerEndpoint("/swagger/v1/swagger.json", "Catalog HTTP API V1");
                });
 
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
-
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Catalog API");
+                await context.Response.WriteAsync("Catalog HTTP API");
             });
         }
     }

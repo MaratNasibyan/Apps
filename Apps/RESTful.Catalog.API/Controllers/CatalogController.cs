@@ -47,15 +47,15 @@ namespace RESTful.Catalog.API.Controllers
 
             if (catalogs is null)
             {
-                _logger.LogInformation("Data wasn't found in Db");
+                _logger.LogInformation(RESTAPI.Log.DataWasNotFound());
                 
                 return NotFound(ResponseError.Create(string.Empty));
-            }
-
+            }                       
+       
             var pagedList = catalogs.ToPagedList(ctgResourcePrms);
-
-            var previousPageLink = pagedList.HasPrevious ? _linkHelper.GenerateLink("GetCatalogs", ctgResourcePrms, ResourceUriType.PreviousPage) : null;
-            var nextPageLink = pagedList.HasNext ? _linkHelper.GenerateLink("GetCatalogs",ctgResourcePrms, ResourceUriType.NextPage) : null;
+           
+            var previousPageLink = pagedList.HasPrevious ? _linkHelper.GenerateLink(RESTAPI.Route.GET_GATALOGS, ctgResourcePrms, ResourceUriType.PreviousPage) : null;
+            var nextPageLink = pagedList.HasNext ? _linkHelper.GenerateLink(RESTAPI.Route.GET_GATALOGS, ctgResourcePrms, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
@@ -74,14 +74,14 @@ namespace RESTful.Catalog.API.Controllers
             return Ok(ResponseSuccess.Create(responseObj));         
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")]       
         public async Task<IActionResult> GetCatalogTypeByIdAsync(int id)
         {                        
             var catalog = await _catalogSvc.GetCatalogItemByIdAsync(id);
 
             if (catalog is null)
             {
-                _logger.LogInformation($"With id {id} data wasn't found in Db");
+                _logger.LogInformation(RESTAPI.Log.DataWasNotFound(id));
 
                 return NotFound(ResponseError.Create(string.Empty));
             }

@@ -46,7 +46,7 @@ namespace RESTful.Catalog.API
             services.AddAuthentication("Bearer")
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = "http://localhost:3000";
+                        options.Authority = "http://localhost:5100";
                         options.RequireHttpsMetadata = false;
                         options.ApiName = "catalogapi";
                     });
@@ -59,7 +59,7 @@ namespace RESTful.Catalog.API
             {
                 options.AddPolicy("CorsPolicy",
                         builder =>
-                        {                         
+                        {
                             builder.AllowAnyHeader();
                             builder.AllowAnyOrigin();
                             builder.AllowAnyMethod();
@@ -68,7 +68,7 @@ namespace RESTful.Catalog.API
             });
 
             #endregion
-           
+
             services.AddOptions();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
                      

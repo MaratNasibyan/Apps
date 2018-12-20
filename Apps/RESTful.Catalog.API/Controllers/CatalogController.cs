@@ -15,28 +15,27 @@ using static RESTful.Catalog.API.Utilities.Infra.Enums;
 namespace RESTful.Catalog.API.Controllers
 {
     [Route("api/catalogs")]
-    public class CatalogController : Controller
+    public class CatalogController : BaseController
     {      
-        private readonly ICatalogService _catalogSvc;
-        private readonly ILogger<CatalogController> _logger;    
+        private readonly ICatalogService _catalogSvc;         
         private readonly ILinkHelper _linkHelper;
 
         #region ctor
-
-        public CatalogController(ICatalogService catalogSvc, ILogger<CatalogController> logger, ILinkHelper linkHelper)
+    
+        public CatalogController(ILoggerFactory loggerFactory, ILinkHelper linkHelper, ICatalogService catalogSvc) 
+            : base(loggerFactory.CreateLogger("CatalogController"))
         {
-            _catalogSvc = catalogSvc;
-            _logger = logger;
+            _catalogSvc = catalogSvc;          
             _linkHelper = linkHelper;
         }
-
+      
         #endregion
 
         #region GET
      
         [HttpOptions]
         public IActionResult Index()
-        {
+        {                   
             return View();
         }
 
@@ -48,7 +47,7 @@ namespace RESTful.Catalog.API.Controllers
             if (catalogs is null)
             {
                 _logger.LogInformation(RESTAPI.Log.DataWasNotFound());
-                
+              
                 return NotFound(ResponseError.Create(string.Empty));
             }                       
        

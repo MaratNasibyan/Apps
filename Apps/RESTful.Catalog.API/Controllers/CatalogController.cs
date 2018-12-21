@@ -46,9 +46,9 @@ namespace RESTful.Catalog.API.Controllers
 
             if (catalogs is null)
             {
-                _logger.LogInformation(RESTAPI.Log.DataWasNotFound());
+                _logger.LogInformation(Resource.NotFound);
               
-                return NotFound(ResponseError.Create(string.Empty));
+                return NotFound(ResponseError.Create(Resource.NotFound));
             }                       
        
             var pagedList = catalogs.ToPagedList(ctgResourcePrms);
@@ -80,9 +80,9 @@ namespace RESTful.Catalog.API.Controllers
 
             if (catalog is null)
             {
-                _logger.LogInformation(RESTAPI.Log.DataWasNotFound(id));
+                _logger.LogInformation(Resource.NotFound);
 
-                return NotFound(ResponseError.Create(string.Empty));
+                return NotFound(ResponseError.Create(Resource.NotFound));
             }
 
             var responseObj = catalog.ToViewModel<CatalogType, CatalogTypeDto>();      

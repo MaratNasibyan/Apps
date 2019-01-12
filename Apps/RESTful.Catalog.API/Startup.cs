@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using Newtonsoft.Json;
+using NLog;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -125,7 +126,7 @@ namespace RESTful.Catalog.API
         }
       
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider, IApplicationLifetime applicationLifetime)
         {           
             loggerFactory.AddNLog();
       
@@ -152,6 +153,11 @@ namespace RESTful.Catalog.API
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            applicationLifetime.ApplicationStarted.Register(() => { LogManager.GetCurrentClassLogger().Info("====APPLICATION STARTED===="); });
+            applicationLifetime.ApplicationStopping.Register(() => { LogManager.GetCurrentClassLogger().Info("====APPLICATION STOPPING===="); });
+            applicationLifetime.ApplicationStopped.Register(() => { LogManager.GetCurrentClassLogger().Info("====APPLICATION STOPPED===="); });
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Catalog HTTP API");

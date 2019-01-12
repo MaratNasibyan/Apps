@@ -63,6 +63,17 @@ namespace Authentication.Server.Configuration
             {
                 new Client
                 {
+                    ClientId = "catalogapi",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                    AllowedScopes = new [] { "catalogapi" }
+                },
+
+                new Client
+                {
                     ClientId = "js",
                     ClientName = "JavaScript Client",
                     // no interactive user, use the clientid/secret for authentication

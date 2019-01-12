@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+/*using Microsoft.AspNetCore.Authorization;*/
 using RESTful.Catalog.API.Infra.Models;
 using RESTful.Catalog.API.Infra.Mapper;
 using RESTful.Catalog.API.Infra.Helpers;
@@ -14,6 +15,7 @@ using static RESTful.Catalog.API.Utilities.Infra.Enums;
 
 namespace RESTful.Catalog.API.Controllers
 {
+   /* [Authorize] */
     [Route("api/catalogs")]
     public class CatalogController : BaseController
     {      

@@ -47,6 +47,8 @@ namespace Authentication.Server
             app.UseHttpsRedirection();
             app.UseMvc();
 
+            app.UseStaticFiles();
+
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Authentication Server");

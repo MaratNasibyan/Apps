@@ -8,6 +8,7 @@ using Authentication.Server.Configuration;
 
 namespace Authentication.Server
 {
+    /* Moved project folder */
     public class Startup
     {
         public Startup(IConfiguration configuration)

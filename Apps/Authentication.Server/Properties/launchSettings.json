@@ -12,12 +12,12 @@
     "IIS Express": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "use64Bit": true,
-      "applicationUrl": "http://localhost:3000"
+      "applicationUrl": "http://localhost:5100"
     },
     "Authentication.Server": {
       "commandName": "Project",

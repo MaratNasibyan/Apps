@@ -11,6 +11,7 @@ using Authentication.Server.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Newtonsoft.Json;
+using Authentication.Server.Certificate;
 
 namespace Authentication.Server
 {
@@ -31,8 +32,8 @@ namespace Authentication.Server
                                   options.UseSqlServer(Configuration["AuthSettings:ConnectionString"]));
 
             services.AddIdentity<User, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
-
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
             services.AddMvc(
                    setupAction =>
                    {
@@ -44,12 +45,14 @@ namespace Authentication.Server
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            services.AddIdentityServer()              
+            services.AddIdentityServer()
+                    .AddAspNetIdentity<User>()
                     .AddDeveloperSigningCredential()
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryClients(Config.GetClients())
                     .AddTestUsers(Config.GetUsers());
+
 
             services.AddOptions();
             services.Configure<AuthSettings>(Configuration.GetSection("AuthSettings"));

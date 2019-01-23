@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
@@ -6,12 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Authentication.Server.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Authentication.Server.Data;
-using Authentication.Server.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Formatters;
-using Newtonsoft.Json;
-using Authentication.Server.Certificate;
+using Authentication.Server.Data;
+using Authentication.Server.Entities;
 
 namespace Authentication.Server
 {
@@ -31,7 +30,7 @@ namespace Authentication.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                                   options.UseSqlServer(Configuration["AuthSettings:ConnectionString"]));
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<ApplicationUser, ApplicationRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
             services.AddMvc(
@@ -46,7 +45,7 @@ namespace Authentication.Server
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddIdentityServer()
-                    .AddAspNetIdentity<User>()
+                    .AddAspNetIdentity<ApplicationUser>()
                     .AddDeveloperSigningCredential()
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryApiResources(Config.GetApiResources())

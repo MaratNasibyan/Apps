@@ -1,17 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Authentication.Server.Models;
 using Authentication.Server.Models.ViewModels;
-using System.Threading.Tasks;
+using Authentication.Server.Entities;
 
 namespace Authentication.Server.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -28,7 +29,7 @@ namespace Authentication.Server.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email};
+                ApplicationUser user = new ApplicationUser { Email = model.Email, UserName = model.Email};
                
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

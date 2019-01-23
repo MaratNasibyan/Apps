@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Authentication.Server.Models;
 using Authentication.Server.Models.ViewModels;
 using Authentication.Server.Entities;
 

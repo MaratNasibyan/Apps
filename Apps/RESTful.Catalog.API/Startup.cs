@@ -23,6 +23,8 @@ using RESTful.Catalog.API.Infrastructure.Abstraction;
 using RESTful.Catalog.API.Infrastructure.Repositories;
 using RESTful.Catalog.API.Services.Services;
 using RESTful.Catalog.API.Services.Abstraction;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace RESTful.Catalog.API
 {
@@ -44,13 +46,37 @@ namespace RESTful.Catalog.API
                     .AddAuthorization()
                     .AddJsonFormatters();
 
-            services.AddAuthentication("Bearer")
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = "http://localhost:3000";
-                        options.RequireHttpsMetadata = false;
-                        options.ApiName = "catalogapi";
-                    });
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+            
+            })
+           .AddCookie()
+           .AddOpenIdConnect(options =>
+           {              
+               options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+               options.Authority = "http://localhost:5100/";
+               options.SignedOutRedirectUri = "http://localhost:5012";
+               options.ClientId = "catalogapi";
+               options.ClientSecret = "secret";
+               options.ResponseType = "code id_token";
+               options.SaveTokens = true;
+               options.GetClaimsFromUserInfoEndpoint = true;
+               options.RequireHttpsMetadata = false;
+               options.Scope.Add("catalogapi");
+               options.Scope.Add("openid");
+               options.Scope.Add("profile");
+               
+           });
+
+            //services.AddAuthentication("Bearer")
+            //        .AddIdentityServerAuthentication(options =>
+            //        {
+            //            options.Authority = "http://localhost:5100";
+            //            options.RequireHttpsMetadata = false;
+            //            options.ApiName = "catalogapi";
+            //        });
 
             #endregion
 

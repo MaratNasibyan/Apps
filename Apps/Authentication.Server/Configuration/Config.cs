@@ -2,6 +2,7 @@
 using IdentityServer4.Models;
 using System.Security.Claims;
 using System.Collections.Generic;
+using IdentityServer4;
 
 namespace Authentication.Server.Configuration
 {
@@ -61,15 +62,45 @@ namespace Authentication.Server.Configuration
         {
             return new List<Client>
             {
+                //new Client
+                //{
+                //    ClientId = "catalogapi",
+                //    ClientSecrets =
+                //    {
+                //        new Secret("secret".Sha256())
+                //    },
+                //    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
+                //    AllowedScopes = new [] { "catalogapi" }
+                //},
+
                 new Client
                 {
                     ClientId = "catalogapi",
+                    ClientName = "App1 Client",
+                    AllowAccessTokensViaBrowser = true,
+                    RequireConsent = false,
+                    AllowOfflineAccess = true,
+                    AlwaysIncludeUserClaimsInIdToken = true,                    
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedGrantTypes = GrantTypes.ResourceOwnerPasswordAndClientCredentials,
-                    AllowedScopes = new [] { "catalogapi" }
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RedirectUris = new List<string>
+                    {
+                        "http://localhost:5012/signin-oidc"
+                    },
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        "http://localhost:5012/signout-callback-oidc"
+                    },
+                    AllowedScopes = new []
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "catalogapi"
+                    }
                 },
 
                 new Client

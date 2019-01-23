@@ -26,7 +26,7 @@ namespace Authentication.Server
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {          
             services.AddDbContext<ApplicationDbContext>(options =>
                                   options.UseSqlServer(Configuration["AuthSettings:ConnectionString"]));
 
@@ -49,10 +49,8 @@ namespace Authentication.Server
                     .AddDeveloperSigningCredential()
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())
                     .AddInMemoryApiResources(Config.GetApiResources())
-                    .AddInMemoryClients(Config.GetClients())
-                    .AddTestUsers(Config.GetUsers());
-
-
+                    .AddInMemoryClients(Config.GetClients());
+             
             services.AddOptions();
             services.Configure<AuthSettings>(Configuration.GetSection("AuthSettings"));
         }

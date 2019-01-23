@@ -12,6 +12,7 @@ using RESTful.Catalog.API.Services.Abstraction;
 using RESTful.Catalog.API.Utilities.Extenshions;
 using RESTful.Catalog.API.Infrastructure.Models;
 using static RESTful.Catalog.API.Utilities.Infra.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RESTful.Catalog.API.Controllers
 {
@@ -41,6 +42,7 @@ namespace RESTful.Catalog.API.Controllers
             return View();
         }
 
+        [Authorize]
         [HttpGet(Name = "GetCatalogs")]
         public async Task<IActionResult> GetCatalogTypes(CatalogResourceParameters ctgResourcePrms)
         {

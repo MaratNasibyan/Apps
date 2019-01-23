@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RESTful.Catalog.API.Utilities.Infra;
 
@@ -13,8 +10,9 @@ namespace RESTful.Catalog.API.Controllers
         {
             return View();
         }
-
-        [HttpGet("{email}/{password}")]
+      
+        //[Authorize]
+      //  [HttpGet("{email}/{password}")]
         public IActionResult CallBackReact(string email, string password)
         {
             return Ok(ResponseSuccess.Create(email + "-" + password));

@@ -1,0 +1,24 @@
+﻿
+@*@{
+    Layout = null;
+}*@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <meta name="viewport" content="width=device-width" />
+    <title>_Layout</title>
+</head>
+<body>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+
+    @section Scripts {
+        @RenderSection("Scripts", required: false)
+    }
+</body>
+</html>

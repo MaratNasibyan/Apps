@@ -24,4 +24,8 @@
     <ProjectReference Include="..\RESTful.Catalog.API\RESTful.Catalog.API.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\" />
+  </ItemGroup>
+
 </Project>

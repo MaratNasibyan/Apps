@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Authentication.Server.Entities;
 using Authentication.Server.Configuration;
 using Authentication.Server.Data.UserEntityConfigurations;
-using Authentication.Server.Entities;
 
 namespace Authentication.Server.Data
 {

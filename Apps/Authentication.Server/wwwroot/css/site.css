@@ -159,12 +159,14 @@ form .col-md-4 {
     align-content: center;
 }
 
-.register-container {
+/*.register-container {
     min-height: 70vh;
     padding-top: 40px;
     margin-bottom: 30px;
     padding-left: 30px;
-}
+    text-align: center !important;
+    align-content: center;
+}*/
 
 .input-validation-error {
     border: 1px solid #fb0d0d;

@@ -10,13 +10,13 @@ namespace Authentication.Server.Models.ViewModels
                
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "password")]
+        [Display(Name = "Password")]
         public string Password { get; set; }
 
         [Required]
         [Compare("Password", ErrorMessage = "Password don't match")]
         [DataType(DataType.Password)]
-        [Display(Name = "confirmpassword")]
+        [Display(Name = "Confirm Password")]
         public string PasswordConfirm { get; set; }
     }
 }

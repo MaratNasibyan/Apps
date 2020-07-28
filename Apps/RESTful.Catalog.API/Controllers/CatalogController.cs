@@ -44,6 +44,8 @@ namespace RESTful.Catalog.API.Controllers
 
         [Authorize]
         [HttpGet(Name = "GetCatalogs")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetCatalogTypes(CatalogResourceParameters ctgResourcePrms)
         {
             var catalogs = await _catalogSvc.GetCatalogTypesAsync(ctgResourcePrms);

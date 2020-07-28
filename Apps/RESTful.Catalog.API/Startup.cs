@@ -66,10 +66,9 @@ namespace RESTful.Catalog.API
                options.RequireHttpsMetadata = false;
                options.Scope.Add("catalogapi");
                options.Scope.Add("openid");
-               options.Scope.Add("profile");
-               
+               options.Scope.Add("profile");               
            });
-
+         
             //services.AddAuthentication("Bearer")
             //        .AddIdentityServerAuthentication(options =>
             //        {

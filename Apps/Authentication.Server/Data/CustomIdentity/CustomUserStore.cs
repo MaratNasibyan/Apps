@@ -24,7 +24,7 @@ namespace Authentication.Server.Data.CustomIdentity
             //_appSettings = appSettings;
             //_accessor = accessor;
         }
-
+      
         #region IUserStore
 
         public Task<IdentityResult> CreateAsync(CustomIdentityUser user, CancellationToken cancellationToken)
